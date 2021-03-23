@@ -27,4 +27,7 @@ before_script:
 
 test:
   script:
-    - python topology_test.py
+    - pytest topology_test.py --junitxml=report.xml
+  artifacts:
+    reports:
+      junit: report.xml
