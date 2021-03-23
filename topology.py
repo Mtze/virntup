@@ -42,6 +42,7 @@ class V_topology:
 class _Node(ABC):
     """_Node.
     """
+    next_id = 1
 
     def __init__(self, name):
         """__init__.
@@ -76,8 +77,6 @@ class vRouter(_Node):
     """vRouter.
     """
 
-    next_id = 1
-
     def __init__(self, name="vRouter"):
         """__init__.
 
@@ -88,8 +87,8 @@ class vRouter(_Node):
         """
         super().__init__(name)
 
-        self.id = vRouter.next_id
-        vRouter.next_id += 1
+        self.id = _Node.next_id
+        _Node.next_id += 1
 
         self.neighours = []
 
@@ -115,12 +114,16 @@ class vRouter(_Node):
         for n in self.neighours:
             n.accept(visitor)
 
+    def get_dot_representation(self):
+        r = ""
+        for n in self.neighours:
+            r += str(self.id) + " -- " + str(n.id) + "\n"
+        return r
+
 
 class Host(_Node):
     """Host.
     """
-
-    next_id = 1
 
     def __init__(self, name="Host"):
         """__init__.
@@ -132,8 +135,8 @@ class Host(_Node):
         """
         super().__init__(name)
 
-        self.id = Host.next_id
-        Host.next_id += 1
+        self.id = _Node.next_id
+        _Node.next_id += 1
 
     def accept(self, visitor):
         """accept.
@@ -144,6 +147,9 @@ class Host(_Node):
             AbstractVTopologyVisitor - Visitor to be applyed on the Node
         """
         visitor.visit_Host(self)
+
+    def get_dot_representation(self):
+        return str(self.id) + "[shape=box]\n"
 
 
 class AbstractVTopologyVisitor(ABC):
@@ -196,3 +202,36 @@ class PrintNodesVisitor(AbstractVTopologyVisitor):
             host
         """
         print(host)
+
+
+class DotRepresentationVisitor(AbstractVTopologyVisitor):
+    """PrintNodesVisitor.
+    """
+
+    def __init__(self):
+        self.prefix = "graph graphname {\n"
+        self.node_rep = ""
+        self.suffix = "}"
+
+    def get_representation(self):
+        return self.prefix + self.node_rep + self.suffix
+
+    def visit_vRouter(self, vRouter):
+        """visit_vRouter.
+
+        Parameters
+        ----------
+        vRouter :
+            vRouter
+        """
+        self.node_rep += vRouter.get_dot_representation()
+
+    def visit_Host(self, host):
+        """visit_Host.
+
+        Parameters
+        ----------
+        host :
+            host
+        """
+        self.node_rep += host.get_dot_representation()
