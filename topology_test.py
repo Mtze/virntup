@@ -37,17 +37,12 @@ def create_multi_layer_topo():
                 l2.add_link(topology.Host())
     return topo
 
-
+###########################################################
 class TestVRouter(unittest.TestCase):
     pass
 
 
-class TestPrintVisitor(unittest.TestCase):
-    #print_v = topology.PrintNodesVisitor()
-    # topo.apply_visitor(print_v)
-    pass
-
-
+###########################################################
 class TestDotRepresentationVisitor(unittest.TestCase):
 
     def test_3_node_topo(self):
