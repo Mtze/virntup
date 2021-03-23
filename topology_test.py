@@ -3,22 +3,14 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
+root = topology.vRouter()
 
-p1 = topology.LogicalPort()
-p2 = topology.LogicalPort()
-p3 = topology.LogicalPort()
-p4 = topology.LogicalPort()
+topo = topology.V_topology(root)
 
-
-topo = topology.V_topology()
-
-topo.add_host(topology.Host(p1))
-topo.add_host(topology.Host(p2))
-topo.add_router(topology.vRouter([p3, p4]))
+root.add_link(topology.Host())
+root.add_link(topology.Host())
 
 
-topo.create_link(p1, p3)
-topo.create_link(p2, p4)
+print_v = topology.PrintNodesVisitor()
 
-
-topo.routers[0].accept(topology.PrintNodesVisitor())
+topo.apply_visitor(print_v)
