@@ -4,10 +4,12 @@ import logging
 
 
 class V_topology:
-    """V_topology.
+    """V_topology. Container-Class for a virutal topology. 
+    This class holds the root router and can be used to apply vsitors of type
+    `AbstractVTopologyVisitor` to walk the topology tree. 
     """
 
-    def __init__(self, router=None):
+    def __init__(self, router):
         """__init__.
         """
         assert isinstance(router, vRouter)
@@ -15,25 +17,40 @@ class V_topology:
         logging.info("V_topology initialized")
 
     def set_root_router(self, router):
-        """add_router.
+        """set_root_router.
 
         Parameters
         ----------
         router :
-            router
+            vRouter
         """
         assert isinstance(router, vRouter)
         self.router = router
         logging.info("Router " + str(router) + " is new root router")
-    
+
     def apply_visitor(self, visitor):
+        """apply_visitor.
+
+        Parameters
+        ----------
+        visitor :
+            AbstractVTopologyVisitor
+        """
         self.router.accept(visitor)
+
 
 class _Node(ABC):
     """_Node.
     """
 
     def __init__(self, name):
+        """__init__.
+
+        Parameters
+        ----------
+        name :
+            string
+        """
         self.name = name
 
     @abstractmethod
@@ -66,8 +83,8 @@ class vRouter(_Node):
 
         Parameters
         ----------
-        ports :
-            List of LogicalPorts attached to the vRouter
+        name :
+            name
         """
         super().__init__(name)
 
@@ -77,6 +94,13 @@ class vRouter(_Node):
         self.neighours = []
 
     def add_link(self, other_node):
+        """add_link.
+
+        Parameters
+        ----------
+        other_node :
+            _Node (So either vRouter or Host)
+        """
         self.neighours.append(other_node)
 
     def accept(self, visitor):
@@ -103,10 +127,8 @@ class Host(_Node):
 
         Parameters
         ----------
-        port :
-            LogicalPort - The Logical Port which should be assigned to the Host
         name :
-            String - Hostname
+            string - hostname of the Host
         """
         super().__init__(name)
 
