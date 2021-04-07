@@ -71,6 +71,7 @@ class _Node(ABC):
         self.name = name
         self.uplink_network = V_topology.get_next_free_subnet(self)
         self.ipv4Adress = self.uplink_network.network_address + 1
+        self.routingtable = []
 
     @abstractmethod
     def accept(self, visitor):
@@ -142,6 +143,24 @@ class vRouter(_Node):
             r += str(self.id) + " -- " + str(n.id) + "\n"
         return r
 
+    def set_routing_table(self):
+        for i in range(len(self.neighours)):
+
+            # Store the current neighbour in a varaible for easy access
+            current_node = self.neighours[i]
+
+            # Iterate over the routing table of the current node and add
+            # all Networks to our routingtable with corresponding egress
+            # port.
+            for table_entry in current_node.routingtable:
+                self.routingtable.append((i, table_entry[1]))
+
+            # Finally add route to shared network between us and current node
+            self.routingtable.append((i, current_node.uplink_network))
+
+        logging.info("Updated Routingtable")
+        logging.debug(str(self) + " has new routing table: " + str(self.routingtable))
+
 
 class Host(_Node):
     """Host.
@@ -173,6 +192,9 @@ class Host(_Node):
 
     def get_dot_representation(self):
         return str(self.id) + "[shape=box]\n"
+
+    def set_routing_table(self):
+        self.routingtable = []
 
 
 class AbstractVTopologyVisitor(ABC):
@@ -209,6 +231,14 @@ class AbstractPreOderVTopologyVisitor(AbstractVTopologyVisitor):
 class AbstractPostOrderVTopologyVisitor(AbstractVTopologyVisitor):
     pass
 
+
+class UpdateRoutingTableVisitor(AbstractPostOrderVTopologyVisitor):
+
+    def visit_vRouter(self, vRouter):
+        vRouter.set_routing_table()
+
+    def visit_Host(self, host):
+        host.set_routing_table()
 
 class PostOrderPrintNodeVisitor(AbstractPostOrderVTopologyVisitor):
     """PrintNodesVisitor.
