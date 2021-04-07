@@ -1,20 +1,36 @@
 import ipaddress
-from abc import ABCMeta, abstractmethod, ABC
+from abc import abstractmethod, ABC
 import logging
+
+ADDRESS_SPACE = ipaddress.IPv4Network("10.42.0.0/16")
+SUBNET_PREFIX = 24
 
 
 class V_topology:
-    """V_topology. Container-Class for a virutal topology. 
+    """V_topology. Container-Class for a virutal topology.
     This class holds the root router and can be used to apply vsitors of type
-    `AbstractVTopologyVisitor` to walk the topology tree. 
+    `AbstractVTopologyVisitor` to walk the topology tree.
     """
 
+    _next_subnet = 0
+    available_subnets = list(ADDRESS_SPACE.subnets(new_prefix=SUBNET_PREFIX))
+
     def __init__(self, router):
-        """__init__.
-        """
+
         assert isinstance(router, vRouter)
         self.router = router
         logging.info("V_topology initialized")
+
+        logging.info("Using " + str(len(V_topology.available_subnets)) +
+                     " /" + str(SUBNET_PREFIX) + " subnets in " + str(ADDRESS_SPACE))
+
+    def get_next_free_subnet(node):
+        V_topology._next_subnet += 1
+        logging.info("Assigned  " +
+                     str(V_topology.available_subnets[V_topology._next_subnet - 1]) + 
+                     " to " + str(node)
+                     )
+        return V_topology.available_subnets[V_topology._next_subnet - 1]
 
     def set_root_router(self, router):
         """set_root_router.
@@ -53,6 +69,8 @@ class _Node(ABC):
             string
         """
         self.name = name
+        self.uplink_network = V_topology.get_next_free_subnet(self)
+        self.ipv4Adress = self.uplink_network.network_address + 1
 
     @abstractmethod
     def accept(self, visitor):
@@ -85,12 +103,11 @@ class vRouter(_Node):
         name :
             name
         """
-        super().__init__(name)
 
         self.id = _Node.next_id
         _Node.next_id += 1
-
         self.neighours = []
+        super().__init__(name)
 
     def add_link(self, other_node):
         """add_link.
@@ -133,10 +150,11 @@ class Host(_Node):
         name :
             string - hostname of the Host
         """
-        super().__init__(name)
 
         self.id = _Node.next_id
         _Node.next_id += 1
+
+        super().__init__(name)
 
     def accept(self, visitor):
         """accept.
