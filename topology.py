@@ -54,6 +54,10 @@ class V_topology:
         """
         self.router.accept(visitor)
 
+    def update_all_routing_tables(self):
+        rt_visitor = UpdateRoutingTableVisitor()
+        self.apply_visitor(rt_visitor)
+
 
 class _Node(ABC):
     """_Node.
@@ -159,7 +163,8 @@ class vRouter(_Node):
             self.routingtable.append((i, current_node.uplink_network))
 
         logging.info("Updated Routingtable")
-        logging.debug(str(self) + " has new routing table: " + str(self.routingtable))
+        logging.debug(str(self) + " has new routing table: " +
+                      str(self.routingtable))
 
 
 class Host(_Node):
@@ -239,6 +244,7 @@ class UpdateRoutingTableVisitor(AbstractPostOrderVTopologyVisitor):
 
     def visit_Host(self, host):
         host.set_routing_table()
+
 
 class PostOrderPrintNodeVisitor(AbstractPostOrderVTopologyVisitor):
     """PrintNodesVisitor.
