@@ -9,7 +9,7 @@ SUBNET_PREFIX = 24
 class V_topology:
     """V_topology. Container-Class for a virutal topology.
     This class holds the root router and can be used to apply vsitors of type
-    `AbstractVTopologyVisitor` to walk the topology tree.
+    `AbstractPreOderVTopologyVisitor` to walk the topology tree.
     """
 
     _next_subnet = 0
@@ -27,7 +27,7 @@ class V_topology:
     def get_next_free_subnet(node):
         V_topology._next_subnet += 1
         logging.info("Assigned  " +
-                     str(V_topology.available_subnets[V_topology._next_subnet - 1]) + 
+                     str(V_topology.available_subnets[V_topology._next_subnet - 1]) +
                      " to " + str(node)
                      )
         return V_topology.available_subnets[V_topology._next_subnet - 1]
@@ -127,9 +127,14 @@ class vRouter(_Node):
         visitor :
             AbstractVTopologyVisitor - Visitor to be applyed on the Node
         """
-        visitor.visit_vRouter(self)
+        if isinstance(visitor, AbstractPreOderVTopologyVisitor):
+            visitor.visit_vRouter(self)
+
         for n in self.neighours:
             n.accept(visitor)
+
+        if isinstance(visitor, AbstractPostOrderVTopologyVisitor):
+            visitor.visit_vRouter(self)
 
     def get_dot_representation(self):
         r = ""
@@ -197,7 +202,15 @@ class AbstractVTopologyVisitor(ABC):
         raise NotImplementedError("")
 
 
-class PrintNodesVisitor(AbstractVTopologyVisitor):
+class AbstractPreOderVTopologyVisitor(AbstractVTopologyVisitor):
+    pass
+
+
+class AbstractPostOrderVTopologyVisitor(AbstractVTopologyVisitor):
+    pass
+
+
+class PostOrderPrintNodeVisitor(AbstractPostOrderVTopologyVisitor):
     """PrintNodesVisitor.
     """
 
@@ -222,7 +235,32 @@ class PrintNodesVisitor(AbstractVTopologyVisitor):
         print(host)
 
 
-class DotRepresentationVisitor(AbstractVTopologyVisitor):
+class PreOderPrintNodesVisitor(AbstractPreOderVTopologyVisitor):
+    """PrintNodesVisitor.
+    """
+
+    def visit_vRouter(self, vRouter):
+        """visit_vRouter.
+
+        Parameters
+        ----------
+        vRouter :
+            vRouter
+        """
+        print(vRouter)
+
+    def visit_Host(self, host):
+        """visit_Host.
+
+        Parameters
+        ----------
+        host :
+            host
+        """
+        print(host)
+
+
+class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
     """PrintNodesVisitor.
     """
 
