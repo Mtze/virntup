@@ -82,7 +82,7 @@ class V_topology:
     def apply_visitor(self, visitor):
         """apply_visitor.
 
-        This meta-function applies a AbstractVTopologyVisitor to the topology. 
+        This meta-function applies a AbstractVTopologyVisitor to the topology.
         The visitor has to be a subclass of AbstractVTopologyVisitor!
 
         Parameters
@@ -95,9 +95,9 @@ class V_topology:
     def update_all_routing_tables(self):
         """update_all_routing_tables.
 
-        After a topology was generated (or updated) the routing-tables of each 
+        After a topology was generated (or updated) the routing-tables of each
         _Node have to be updated. This method updates all routing-tales of all
-        _Nodes in the topology. 
+        _Nodes in the topology.
 
         """
         rt_visitor = UpdateRoutingTableVisitor()
@@ -107,7 +107,7 @@ class V_topology:
 class _Node(ABC):
     """_Node.
 
-    Abstract _Node implementation. This class specifies how a topology node has 
+    Abstract _Node implementation. This class specifies how a topology node has
     to look like. This class must not be initialized!
     """
     next_id = 1
