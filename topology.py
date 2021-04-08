@@ -2,13 +2,24 @@ import ipaddress
 from abc import abstractmethod, ABC
 import logging
 
+
+"""
+The ADDRESS_SPACE variable holds the IP Address space used for topology
+generation. The Each _Node gets a  portion from this ADDRESS_SPACE
+during initialization.
+"""
 ADDRESS_SPACE = ipaddress.IPv4Network("10.42.0.0/16")
+
+"""
+The SUBNET_PREFIX allows to configure the desired network size each _Node
+gets assinged during initialization.
+"""
 SUBNET_PREFIX = 24
 
 
 class V_topology:
-    """V_topology. Container-Class for a virutal topology.
-    This class holds the root router and can be used to apply vsitors of type
+    """V_topology. Container-Class for a virtual topology.
+    This class holds the root router and can be used to apply visitors of type
     `AbstractPreOderVTopologyVisitor` to walk the topology tree.
     """
 
@@ -16,6 +27,13 @@ class V_topology:
     available_subnets = list(ADDRESS_SPACE.subnets(new_prefix=SUBNET_PREFIX))
 
     def __init__(self, router):
+        """__init__.
+
+        Parameters
+        ----------
+        router :
+            router
+        """
 
         assert isinstance(router, vRouter)
         self.router = router
@@ -25,6 +43,20 @@ class V_topology:
                      " /" + str(SUBNET_PREFIX) + " subnets in " + str(ADDRESS_SPACE))
 
     def get_next_free_subnet(node):
+        """get_next_free_subnet.
+
+        This class-method manages the sub-net assignment.
+
+        Parameters
+        ----------
+        node :
+            node
+
+        Returns:
+        ---------
+        IPv4Network : An Network inside of ADDRESS_SPACE of size SUBNET_PREFIX
+        """
+
         V_topology._next_subnet += 1
         logging.info("Assigned  " +
                      str(V_topology.available_subnets[V_topology._next_subnet - 1]) +
@@ -34,6 +66,9 @@ class V_topology:
 
     def set_root_router(self, router):
         """set_root_router.
+
+        This method allows to set the root vRouter of the topology.
+        Only necessary if the topology was initialized without a vRouter.
 
         Parameters
         ----------
@@ -47,6 +82,9 @@ class V_topology:
     def apply_visitor(self, visitor):
         """apply_visitor.
 
+        This meta-function applies a AbstractVTopologyVisitor to the topology. 
+        The visitor has to be a subclass of AbstractVTopologyVisitor!
+
         Parameters
         ----------
         visitor :
@@ -55,12 +93,22 @@ class V_topology:
         self.router.accept(visitor)
 
     def update_all_routing_tables(self):
+        """update_all_routing_tables.
+
+        After a topology was generated (or updated) the routing-tables of each 
+        _Node have to be updated. This method updates all routing-tales of all
+        _Nodes in the topology. 
+
+        """
         rt_visitor = UpdateRoutingTableVisitor()
         self.apply_visitor(rt_visitor)
 
 
 class _Node(ABC):
     """_Node.
+
+    Abstract _Node implementation. This class specifies how a topology node has 
+    to look like. This class must not be initialized!
     """
     next_id = 1
 
@@ -80,13 +128,13 @@ class _Node(ABC):
     @abstractmethod
     def accept(self, visitor):
         """accept.
-        Abstract implementation which ensures that all _Node classes impement
+        Abstract implementation which ensures that all _Node classes implement
         the visitor pattern.
 
         Parameters
         ----------
         visitor :
-            AbstractVTopologyVisitor - Visitor to be applyed on the Node
+            AbstractVTopologyVisitor - Visitor to be applied  on the Node
         """
         raise NotImplementedError("This is an abstract class")
 
@@ -130,7 +178,7 @@ class vRouter(_Node):
         Parameters
         ----------
         visitor :
-            AbstractVTopologyVisitor - Visitor to be applyed on the Node
+            AbstractVTopologyVisitor - Visitor to be applied on the Node
         """
         if isinstance(visitor, AbstractPreOderVTopologyVisitor):
             visitor.visit_vRouter(self)
@@ -142,12 +190,16 @@ class vRouter(_Node):
             visitor.visit_vRouter(self)
 
     def get_dot_representation(self):
+        """get_dot_representation.
+        """
         r = ""
         for n in self.neighours:
             r += str(self.id) + " -- " + str(n.id) + "\n"
         return r
 
     def set_routing_table(self):
+        """set_routing_table.
+        """
         for i in range(len(self.neighours)):
 
             # Store the current neighbour in a varaible for easy access
@@ -162,13 +214,16 @@ class vRouter(_Node):
             # Finally add route to shared network between us and current node
             self.routingtable.append((i, current_node.uplink_network))
 
-        logging.info("Updated Routingtable")
+        logging.info("Updated routing table")
         logging.debug(str(self) + " has new routing table: " +
                       str(self.routingtable))
 
 
 class Host(_Node):
     """Host.
+
+    This class represents a Host in a topology. A host is always a
+    leaf _Node. 
     """
 
     def __init__(self, name="Host"):
@@ -191,14 +246,18 @@ class Host(_Node):
         Parameters
         ----------
         visitor :
-            AbstractVTopologyVisitor - Visitor to be applyed on the Node
+            AbstractVTopologyVisitor - Visitor to be applied on the Node
         """
         visitor.visit_Host(self)
 
     def get_dot_representation(self):
+        """get_dot_representation.
+        """
         return str(self.id) + "[shape=box]\n"
 
     def set_routing_table(self):
+        """set_routing_table.
+        """
         self.routingtable = []
 
 
@@ -230,25 +289,59 @@ class AbstractVTopologyVisitor(ABC):
 
 
 class AbstractPreOderVTopologyVisitor(AbstractVTopologyVisitor):
+    """AbstractPreOderVTopologyVisitor.
+
+    This is just a meta class to distinguish between Pre and Post order
+    visitors. Should not be instantiated.
+    """
+
     pass
 
 
 class AbstractPostOrderVTopologyVisitor(AbstractVTopologyVisitor):
+    """AbstractPostOrderVTopologyVisitor.
+
+    This is just a meta class to distinguish between Pre and Post order
+    visitors. Should not be instantiated.
+    """
+
     pass
 
 
 class UpdateRoutingTableVisitor(AbstractPostOrderVTopologyVisitor):
+    """UpdateRoutingTableVisitor.
+
+    This visitor updates the routing table in each _Node in a post-order
+    fashion. This is important as each parent _Node routing table depends
+    on the routing tables of the child nodes.
+
+    This routing approach assumes that each _Node (except the root _Node)
+    has a default route pointing  to the parent. This route is **not**
+    added by this algorithm!
+    """
 
     def visit_vRouter(self, vRouter):
+        """visit_vRouter.
+
+        Parameters
+        ----------
+        vRouter :
+            vRouter
+        """
         vRouter.set_routing_table()
 
     def visit_Host(self, host):
+        """visit_Host.
+
+        Parameters
+        ----------
+        host :
+            Host
+        """
         host.set_routing_table()
 
 
 class PostOrderPrintNodeVisitor(AbstractPostOrderVTopologyVisitor):
-    """PrintNodesVisitor.
-    """
 
     def visit_vRouter(self, vRouter):
         """visit_vRouter.
@@ -297,15 +390,25 @@ class PreOderPrintNodesVisitor(AbstractPreOderVTopologyVisitor):
 
 
 class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
-    """PrintNodesVisitor.
+    """DotRepresentationVisitor.
+
+    This Pre-Order Visitor assembles a [DOT](https://graphviz.org/doc/info/lang.html)
+    compatible representation of the topology.
+
+    After the visitor was applied to the topology, the results can be obtained
+    by calling the `get_representation()` method.
     """
 
     def __init__(self):
+        """__init__.
+        """
         self.prefix = "graph graphname {\n"
         self.node_rep = ""
         self.suffix = "}"
 
     def get_representation(self):
+        """get_representation.
+        """
         return self.prefix + self.node_rep + self.suffix
 
     def visit_vRouter(self, vRouter):
