@@ -16,10 +16,11 @@ class TestDotRepresentationVisitor(unittest.TestCase):
 
     def test_3_node_topo(self):
         expected = r"""graph graphname {
+1[shape=box]
 1 -- 2
 1 -- 3
-2[shape=box]
-3[shape=box]
+2
+3
 }"""
         dot_v = topology.DotRepresentationVisitor()
 
@@ -31,54 +32,67 @@ class TestDotRepresentationVisitor(unittest.TestCase):
 
     def test_multi_layer_topo(self):
         expected = r"""graph graphname {
+1[shape=box]
 1 -- 2
 1 -- 12
 1 -- 22
+2[shape=box]
 2 -- 3
 2 -- 6
 2 -- 9
+3[shape=box]
 3 -- 4
 3 -- 5
-4[shape=box]
-5[shape=box]
+4
+5
+6[shape=box]
 6 -- 7
 6 -- 8
-7[shape=box]
-8[shape=box]
+7
+8
+9[shape=box]
 9 -- 10
 9 -- 11
-10[shape=box]
-11[shape=box]
+10
+11
+12[shape=box]
 12 -- 13
 12 -- 16
 12 -- 19
+13[shape=box]
 13 -- 14
 13 -- 15
-14[shape=box]
-15[shape=box]
+14
+15
+16[shape=box]
 16 -- 17
 16 -- 18
-17[shape=box]
-18[shape=box]
+17
+18
+19[shape=box]
 19 -- 20
 19 -- 21
-20[shape=box]
-21[shape=box]
+20
+21
+22[shape=box]
 22 -- 23
 22 -- 26
 22 -- 29
+23[shape=box]
 23 -- 24
 23 -- 25
-24[shape=box]
-25[shape=box]
+24
+25
+26[shape=box]
 26 -- 27
 26 -- 28
-27[shape=box]
-28[shape=box]
+27
+28
+29[shape=box]
 29 -- 30
 29 -- 31
-30[shape=box]
-31[shape=box]
+30
+31
 }"""
 
         topo = create_multi_layer_topo()

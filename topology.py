@@ -189,13 +189,29 @@ class vRouter(_Node):
         if isinstance(visitor, AbstractPostOrderVTopologyVisitor):
             visitor.visit_vRouter(self)
 
-    def get_dot_representation(self):
+    def get_dot_representation(self, with_routingtable=False):
         """get_dot_representation.
+
+        Parameters
+        ----------
+        with_routingtable :
+            Bool (default: False) - Specifies if the dot representation should
+            contain the routing table
         """
-        r = ""
+        edges = ""
         for n in self.neighours:
-            r += str(self.id) + " -- " + str(n.id) + "\n"
-        return r
+            edges += str(self.id) + " -- " + str(n.id) + "\n"
+
+        router_box = ""
+        if with_routingtable:
+            router_box = str(self.id) + "[\nlabel = \"{" + str(self.id)
+            for route in self.routingtable:
+                router_box += "|" + str(route)
+            router_box += "}\" \nshape=\"record\"]\n"
+        else:
+            router_box += str(self.id) + "[shape=box]\n"
+
+        return router_box + edges
 
     def set_routing_table(self):
         """set_routing_table.
@@ -223,7 +239,7 @@ class Host(_Node):
     """Host.
 
     This class represents a Host in a topology. A host is always a
-    leaf _Node. 
+    leaf _Node.
     """
 
     def __init__(self, name="Host"):
@@ -253,7 +269,7 @@ class Host(_Node):
     def get_dot_representation(self):
         """get_dot_representation.
         """
-        return str(self.id) + "[shape=box]\n"
+        return str(self.id) + "\n"
 
     def set_routing_table(self):
         """set_routing_table.
@@ -342,6 +358,9 @@ class UpdateRoutingTableVisitor(AbstractPostOrderVTopologyVisitor):
 
 
 class PostOrderPrintNodeVisitor(AbstractPostOrderVTopologyVisitor):
+    """PostOrderPrintNodeVisitor.
+    """
+
 
     def visit_vRouter(self, vRouter):
         """visit_vRouter.
@@ -395,16 +414,26 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
     This Pre-Order Visitor assembles a [DOT](https://graphviz.org/doc/info/lang.html)
     compatible representation of the topology.
 
+    It can be specified if the visualization should also contain the routing table. 
+    This is switched of by default as it gets quite messy for big topologies.
+
     After the visitor was applied to the topology, the results can be obtained
     by calling the `get_representation()` method.
     """
 
-    def __init__(self):
+    def __init__(self, with_routingtable=False):
         """__init__.
+
+        Parameters
+        ----------
+        with_routingtable :
+            Bool (default: False) - Specifies if the dot representation should
+            contain the routing table
         """
         self.prefix = "graph graphname {\n"
         self.node_rep = ""
         self.suffix = "}"
+        self.with_routingtable = with_routingtable
 
     def get_representation(self):
         """get_representation.
@@ -419,7 +448,7 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
         vRouter :
             vRouter
         """
-        self.node_rep += vRouter.get_dot_representation()
+        self.node_rep += vRouter.get_dot_representation(self.with_routingtable)
 
     def visit_Host(self, host):
         """visit_Host.
