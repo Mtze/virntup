@@ -126,6 +126,11 @@ class _Node(ABC):
         self.routingtable = []
 
     @abstractmethod
+    def get_IR_representation(self, dict_builder):
+
+        raise NotImplementedError("This is an abstract class")
+
+    @abstractmethod
     def accept(self, visitor):
         """accept.
         Abstract implementation which ensures that all _Node classes implement
@@ -213,6 +218,19 @@ class vRouter(_Node):
 
         return router_box + edges
 
+    def get_IR_representation(self, dict_builder):
+        logging.debug("Create IR representation of " +
+                      self.name + " " + str(self.id))
+        ir = {
+            "name": self.name,
+            "uplink_network": str(self.uplink_network),
+            "neighours": [[x, str(self.neighours[x].id)] for x in range(len(self.neighours))],
+            "routingtable": [[x, str(self.routingtable[x][1].compressed)] for x in range(len(self.routingtable))]
+            # "routingtable" : str(self.routingtable)
+        }
+        logging.debug(str(ir))
+        dict_builder["vRouter"][str(self.id)] = ir
+
     def set_routing_table(self):
         """set_routing_table.
         """
@@ -265,6 +283,13 @@ class Host(_Node):
             AbstractVTopologyVisitor - Visitor to be applied on the Node
         """
         visitor.visit_Host(self)
+
+    def get_IR_representation(self, dict_builder):
+        ir = {
+            "name": self.name,
+            "uplink_network": str(self.uplink_network),
+        }
+        dict_builder["Host"][str(self.id)] = ir
 
     def get_dot_representation(self):
         """get_dot_representation.
@@ -360,7 +385,6 @@ class UpdateRoutingTableVisitor(AbstractPostOrderVTopologyVisitor):
 class PostOrderPrintNodeVisitor(AbstractPostOrderVTopologyVisitor):
     """PostOrderPrintNodeVisitor.
     """
-
 
     def visit_vRouter(self, vRouter):
         """visit_vRouter.
@@ -459,3 +483,31 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
             host
         """
         self.node_rep += host.get_dot_representation()
+
+
+class IntermediateRepresentationVisitor(AbstractPreOderVTopologyVisitor):
+    """IntermediateRepresentationVisitor
+    """
+
+    def __init__(self):
+        self.builder = {"vRouter":{}, "Host":{}}
+
+    def visit_vRouter(self, vRouter):
+        """visit_vRouter.
+
+        Parameters
+        ----------
+        vRouter :
+            vRouter
+        """
+        vRouter.get_IR_representation(self.builder)
+
+    def visit_Host(self, host):
+        """visit_Host.
+
+        Parameters
+        ----------
+        host :
+            host
+        """
+        host.get_IR_representation(self.builder)
