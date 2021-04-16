@@ -103,6 +103,42 @@ class V_topology:
         rt_visitor = UpdateRoutingTableVisitor()
         self.apply_visitor(rt_visitor)
 
+    def get_IR_representation(self):
+        """get_IR_representation.
+
+        This method return the Intermediate Representation of the topology as a
+        dict with the following structure:
+
+        ```
+        {
+            "vRouter": {
+                "1": {
+                    "name" : "example",
+                    "uplink_network" : "10.0.0.0/24",
+                    "neighbour": [
+                        [0,"5"]         #  [Port, Neighbor _Node.id]
+                    ],
+                    "routing_table" : [
+                        [0,"10.0.1.0/24"],
+                        [1,"10.0.2.0/24"]
+                    ]
+                },
+                ...
+            },
+            "Host" : {
+                "5" :{
+                    "name" : "string",
+                    "uplink_network" : "10.0.5.0/24",
+                },
+                ...
+            }
+        }
+        ```
+        """
+        ir_visit = IntermediateRepresentationVisitor()
+        self.apply_visitor(ir_visit)
+        return ir_visit.builder
+
 
 class _Node(ABC):
     """_Node.
@@ -127,6 +163,16 @@ class _Node(ABC):
 
     @abstractmethod
     def get_IR_representation(self, dict_builder):
+        """get_IR_representation.
+
+        Generates the IR of the _Node and inserts it into the IR builder
+        dict.
+
+        Parameters
+        ----------
+        dict_builder :
+            dict of dicts, with structure: `{"vRouter": {}, "Host":{}}`
+        """
 
         raise NotImplementedError("This is an abstract class")
 
@@ -219,6 +265,16 @@ class vRouter(_Node):
         return router_box + edges
 
     def get_IR_representation(self, dict_builder):
+        """get_IR_representation.
+
+        Generates the IR of the _Node and inserts it into the IR builder
+        dict.
+
+        Parameters
+        ----------
+        dict_builder :
+            dict of dicts, with structure: `{"vRouter": {}, "Host":{}}`
+        """
         logging.debug("Create IR representation of " +
                       self.name + " " + str(self.id))
         ir = {
@@ -285,6 +341,17 @@ class Host(_Node):
         visitor.visit_Host(self)
 
     def get_IR_representation(self, dict_builder):
+        """get_IR_representation.
+
+        Generates the IR of the _Node and inserts it into the IR builder
+        dict.
+
+        Parameters
+        ----------
+        dict_builder :
+            dict of dicts, with structure: `{"vRouter": {}, "Host":{}}`
+
+        """
         ir = {
             "name": self.name,
             "uplink_network": str(self.uplink_network),
@@ -487,10 +554,16 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
 
 class IntermediateRepresentationVisitor(AbstractPreOderVTopologyVisitor):
     """IntermediateRepresentationVisitor
+
+    This visitor walks the toplogy and gathers the IR of each _Node 
+    in a builder dict. For the structure of the builder see the 
+    `toplogly.get_IR_representation()` method. 
     """
 
     def __init__(self):
-        self.builder = {"vRouter":{}, "Host":{}}
+        """__init__.
+        """
+        self.builder = {"vRouter": {}, "Host": {}}
 
     def visit_vRouter(self, vRouter):
         """visit_vRouter.
