@@ -37,10 +37,10 @@ class TargetConnector:
 
 # Only for testing
 c = TargetConnector("localhost", 50051)
-c.insert_route(1, "10.0.1.1/32", "08:00:00:00:01:11", 1)
-c.insert_route(1, "10.0.2.2/32", "08:00:00:00:00:00", 2)
-c.insert_route(2, "10.0.1.1/32", "08:00:00:00:00:00", 3)
-c.insert_route(2, "10.0.2.2/32", "08:00:00:00:02:22", 4)
+c.insert_route(1, "10.0.1.0/24", "08:00:00:00:01:01", 1)
+c.insert_route(1, "10.0.2.0/24", "08:00:00:00:00:00", 2)
+c.insert_route(2, "10.0.1.0/24", "08:00:00:00:00:00", 3)
+c.insert_route(2, "10.0.2.0/24", "08:00:00:00:02:01", 4)
 c.insert_vRouter_port_mapping(1, 1)
 c.insert_vRouter_port_mapping(2, 1)
 c.insert_vRouter_port_mapping(3, 2)
