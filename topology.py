@@ -209,9 +209,10 @@ class vRouter(_Node):
         """
 
         self.id = _Node.next_id
+        self.type = 'vRouter'
         _Node.next_id += 1
         self.neighours = []
-        super().__init__(name)
+        super().__init__(name + str(self.id))
 
     def add_link(self, other_node):
         """add_link.
@@ -280,8 +281,8 @@ class vRouter(_Node):
         ir = {
             "name": self.name,
             "uplink_network": str(self.uplink_network),
-            "neighours": [[x, str(self.neighours[x].id)] for x in range(len(self.neighours))],
-            "routingtable": [[x, str(self.routingtable[x][1].compressed)] for x in range(len(self.routingtable))]
+            "neighbors": [[x+1, str(self.neighours[x].id), self.neighours[x].type ] for x in range(len(self.neighours))],
+            "routingtable": [[self.routingtable[x][0], str(self.routingtable[x][1].compressed)] for x in range(len(self.routingtable))]
             # "routingtable" : str(self.routingtable)
         }
         logging.debug(str(ir))
@@ -299,10 +300,10 @@ class vRouter(_Node):
             # all Networks to our routingtable with corresponding egress
             # port.
             for table_entry in current_node.routingtable:
-                self.routingtable.append((i, table_entry[1]))
+                self.routingtable.append((i+1, table_entry[1]))
 
             # Finally add route to shared network between us and current node
-            self.routingtable.append((i, current_node.uplink_network))
+            self.routingtable.append((i+1, current_node.uplink_network))
 
         logging.info("Updated routing table")
         logging.debug(str(self) + " has new routing table: " +
@@ -326,9 +327,14 @@ class Host(_Node):
         """
 
         self.id = _Node.next_id
+        self.type = "host"
         _Node.next_id += 1
 
-        super().__init__(name)
+        super().__init__(name + str(self.id))
+
+        subnet = self.uplink_network.compressed.split('.')[2]
+        self.mac_address = "08:00:00:00:{}:{}".format(subnet, 1)
+        self.ip_address = str(self.uplink_network[1]) + "/" + str(SUBNET_PREFIX)
 
     def accept(self, visitor):
         """accept.
@@ -354,7 +360,8 @@ class Host(_Node):
         """
         ir = {
             "name": self.name,
-            "uplink_network": str(self.uplink_network),
+            "ip": str(self.ip_address),
+            "mac": self.mac_address
         }
         dict_builder["Host"][str(self.id)] = ir
 
