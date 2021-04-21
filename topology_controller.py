@@ -5,13 +5,20 @@ import logging
 
 class TopologyController:
 
-    def __init__(self, topo, env_json):
+    def __init__(self, env_json_fd, topo=None, ir_fd=None):
+        logging.debug(
+            "New TopologyController with \n|->env:{}, \n|->topo: {}, \n|->ir: {}".format(env_json_fd, topo, ir_fd))
 
+        if topo is None and ir_fd is None:
+            raise RuntimeError("Neither topology nor IR is defiend")
+
+        self.ir = {}
         self.topo = topo
-        self.env_json = env_json
 
-        with open(env_json, 'r') as f:
-            self.env = json.load(f)
+        if ir_fd is not None:
+            self.ir = json.load(ir_fd)
+
+        self.env = json.load(env_json_fd)
 
         # port_mapping contains {"vRouter": [physical switch ports]}
         self.port_mapping = {}
@@ -21,15 +28,16 @@ class TopologyController:
         self.host_env = {}
 
         # Optain the Intermediate Representation from the topology object
-        ir = topo.get_IR_representation()
+        if self.topo is not None:
+            self.ir = topo.get_IR_representation()
 
         # Initialize the mapping dicts with all routers present in the toplogy
-        for vRouter_id in ir['vRouter']:
+        for vRouter_id in self.ir['vRouter']:
             self.port_mapping[vRouter_id] = []
             self.route_mapping[vRouter_id] = []
 
-        for vRouter_id in ir['vRouter']:
-            router = ir['vRouter'][vRouter_id]
+        for vRouter_id in self.ir['vRouter']:
+            router = self.ir['vRouter'][vRouter_id]
             current_router_rt_entries = []
             for neighbour in router["neighbors"]:
                 if neighbour[2] == 'vRouter':
@@ -64,7 +72,7 @@ class TopologyController:
                     hostname = link[0]
                     switch_port = link[1]
 
-                    self.host_env[hostname] = ir['Host'][neighbour[1]]
+                    self.host_env[hostname] = self.ir['Host'][neighbour[1]]
 
                     # Assign Link enpoint to current switch
                     self.port_mapping[vRouter_id].append(switch_port)
@@ -76,7 +84,7 @@ class TopologyController:
                         if entry[0] == neighbour[0]:
 
                             # Get mac address of host from IR
-                            mac = ir['Host'][neighbour[1]]['mac']
+                            mac = self.ir['Host'][neighbour[1]]['mac']
 
                             # Add routing entry to mapping
                             self.route_mapping[vRouter_id].append(
@@ -103,7 +111,6 @@ class TopologyController:
         return json.dumps(self.host_env)
 
     def store_host_config_json(self, json_path):
-        logging.info("Store host-config to json file at " + json_path)
+        logging.info("Store host-config to json file at {}".format(json_path))
 
-        with open(json_path, 'w') as f:
-            json.dump(self.host_env, f, indent=4)
+        json.dump(self.host_env, json_path, indent=4)
