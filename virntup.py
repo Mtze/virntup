@@ -64,13 +64,13 @@ CLI parameters will overwrite the configuration if set.
     envgen_parser.add_argument(
         '-e', '--env',
         type=argparse.FileType('r'),
-        help='Path to the enviroment configuration file - Default is `env.json`'
+        help='Path to the enviroment configuration file'
     )
 
     envgen_parser.add_argument(
         '-ir', '--intermediate-representation',
         type=argparse.FileType('r'),
-        help='Path to the intermediate representation json file - Default is `ir.json`'
+        help='Path to the intermediate representation json file'
     )
 
     envgen_parser.add_argument(
@@ -83,7 +83,7 @@ CLI parameters will overwrite the configuration if set.
     envgen_parser.add_argument(
         '-o', '--out-file',
         type=argparse.FileType('w'),
-        help='Path to the file the host-configuration should be stored - Default is `host.json`'
+        help='Path to the file the host-configuration should be stored'
     )
 
     # Define Arguments for deployment subsystem
@@ -96,7 +96,7 @@ CLI parameters will overwrite the configuration if set.
     deploy_parser.add_argument(
         '-e', '--env',
         type=argparse.FileType('r'),
-        help='Path to the enviroment configuration file - Default is `env.json`'
+        help='Path to the enviroment configuration file'
     )
 
     deploy_parser.add_argument(
@@ -113,7 +113,6 @@ CLI parameters will overwrite the configuration if set.
 
     deploy_parser.add_argument(
         '--port',
-        default=50051,
         help='gRPC Port of the P4 Runtime target'
     )
 
