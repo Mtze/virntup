@@ -3,6 +3,11 @@
 report.xml
 *.png
 
+# Project specific 
+env.json
+host.json
+ir.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
