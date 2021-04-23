@@ -9,19 +9,6 @@ import argparse
 from argparse import RawTextHelpFormatter
 LOG_FORMAT = '%(levelname)s - %(module)s - %(message)s'
 
-# topo = topology_generator.create_4_node_topo()
-# topo = topology_generator.create_multi_layer_topo()
-# topo.update_all_routing_tables()
-#
-# topo_controller = TopologyController(
-#    topo, "../testbed-env-setup/environments/large/env.json")
-#
-# topo_controller.store_host_config_json('host-test.json')
-#
-# connector = target_configurator.TargetConnector('localhost', 50051)
-#
-# topo_controller.deploy(connector)
-
 
 def main():
 
