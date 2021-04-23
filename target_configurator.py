@@ -3,14 +3,22 @@ import p4runtime_sh.shell as shell
 
 class TargetConnector:
 
-    def __init__(self, target_ip, target_port):
+    def __init__(self, target_ip, target_port, p4info_path=None, p4binary_path=None):
         self.target_ip = target_ip
         self.target_port = target_port
 
-        shell.setup(device_id=0,
-                    grpc_addr=str(target_ip) + ":" + str(target_port),
-                    election_id=(0, 1)
-                    )
+        if p4info_path is None or p4binary_path is None:
+            shell.setup(device_id=0,
+                        grpc_addr=str(self.target_ip) + ":" + str(self.target_port),
+                        election_id=(0, 1)
+                        )
+        else: 
+
+            shell.setup(device_id=0,
+                        grpc_addr=str(self.target_ip) + ":" + str(self.target_port),
+                        election_id=(0, 1),
+                        config=shell.FwdPipeConfig(p4info_path,p4binary_path)
+                        )
 
     def insert_route(self,
                      match_vRouter_number,
