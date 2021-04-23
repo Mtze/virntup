@@ -27,7 +27,8 @@ before_script:
 
 lint:
   script:
-    -  pylint --rcfile .pylintrc *.py
+    - pip3 install pylint
+    - pylint --rcfile .pylintrc *.py
 
 test:
   script:
