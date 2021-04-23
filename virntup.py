@@ -32,10 +32,6 @@ def main():
                         action='store_true',
                         help='Print Debug log')
 
-    parser.add_argument('--info',
-                        action='store_true',
-                        help='Print Info log')
-
     parser.add_argument(
         '-c', '--conf',
         type=argparse.FileType('r'),
@@ -148,10 +144,8 @@ CLI parameters will overwrite the configuration if set.
 
     if args.debug:
         logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
-    elif args.info:
-        logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
     else:
-        logging.basicConfig(level=logging.ERROR, format=LOG_FORMAT)
+        logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 
     logging.debug(
         "virntup_4 called with the following arguments: {}".format(args))
@@ -189,10 +183,10 @@ CLI parameters will overwrite the configuration if set.
 
         if args.out_file:
             file = args.out_file
-            logging.info("Using outfile defined via CLI: {}".format(file))
+            logging.debug("Using outfile defined via CLI: {}".format(file))
         elif conf['ir']:
-            file = open(conf['ir'])
-            logging.info(
+            file = open(conf['ir'], mode="w+")
+            logging.debug(
                 "Using outfile defined in configuration file {}: {}".format(
                     conf['ir'], file
                 )
@@ -204,16 +198,18 @@ CLI parameters will overwrite the configuration if set.
 
         json.dump(ir, file, indent=4)
 
+        logging.info("Successfully created topology")
+
     elif args.command == 'envgen':
         logging.info("Generate Host Enviroment")
 
         if args.env:
             env = args.env
-            logging.info(
+            logging.debug(
                 "Using CLI parameter for {} - {}".format("env", args.env))
         elif conf['env']:
             env = open(conf['env'], mode='r')
-            logging.info(
+            logging.debug(
                 "Using config json for {} - {}".format("env", conf['env']))
         else:
             logging.error(
@@ -222,11 +218,11 @@ CLI parameters will overwrite the configuration if set.
 
         if args.intermediate_representation:
             ir = args.intermediate_representation
-            logging.info(
+            logging.debug(
                 "Using CLI parameter for {} - {}".format("ir", args.intermediate_representation))
         elif conf['ir']:
             ir = open(conf['ir'], mode='r')
-            logging.info(
+            logging.debug(
                 "Using config json for {} - {}".format("ir", conf['ir']))
         else:
             logging.error(
@@ -235,11 +231,11 @@ CLI parameters will overwrite the configuration if set.
 
         if args.out_file:
             file = args.out_file
-            logging.info(
+            logging.debug(
                 "Using CLI parameter for {} - {}".format("outfile", args.out_file))
         elif conf['host']:
             file = open(conf['host'], mode='w')
-            logging.info(
+            logging.debug(
                 "Using config json for {} - {}".format("outfile", conf['host']))
         else:
             logging.error(
@@ -248,11 +244,11 @@ CLI parameters will overwrite the configuration if set.
 
         if args.target:
             target = args.target
-            logging.info(
+            logging.debug(
                 "Using CLI parameter for {} - {}".format("target", args.target))
         elif conf['target']:
             target = conf['target']
-            logging.info(
+            logging.debug(
                 "Using config json for {} - {}".format("target", conf['target']))
         else:
             logging.error(
@@ -262,6 +258,7 @@ CLI parameters will overwrite the configuration if set.
         if target == 'bmv2':
             topo_controller = TopologyController(env, ir_fd=ir)
             topo_controller.store_host_config_json(file)
+            logging.info("Successfully created host configuration")
         elif target == 'tofino':
             # TODO
             logging.error("`{}` Is not yet implemented".format(target))
