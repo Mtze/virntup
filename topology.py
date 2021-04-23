@@ -58,7 +58,7 @@ class V_topology:
         """
 
         V_topology._next_subnet += 1
-        logging.info("Assigned  " +
+        logging.debug("Assigned  " +
                      str(V_topology.available_subnets[V_topology._next_subnet - 1]) +
                      " to " + str(node)
                      )
@@ -305,7 +305,6 @@ class vRouter(_Node):
             # Finally add route to shared network between us and current node
             self.routingtable.append((i+1, current_node.uplink_network))
 
-        logging.info("Updated routing table")
         logging.debug(str(self) + " has new routing table: " +
                       str(self.routingtable))
 
