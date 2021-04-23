@@ -25,6 +25,10 @@ before_script:
   - source venv/bin/activate
   - pip install -r requirements.txt
 
+lint:
+  script:
+    -  pylint --rcfile .pylintrc *.py
+
 test:
   script:
     - pytest topology_test.py --junitxml=report.xml
