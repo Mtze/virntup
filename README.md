@@ -64,7 +64,8 @@ python3 virntup.py topogen \
     -t minimal \
     -o ir.json
 ```
-    - Virntup now creates an `ir.json` which contains a json representation of the generated toplogy. Have a look at the file, it is quite readable. 
+- Virntup now creates an `ir.json` which contains a json representation of the generated toplogy. Have a look at the file, it is quite readable. 
+
     > Try running `python3 virntup.py topogen -h` for more details
 
 - Now we need to create the host environment. The host environment contains the necessary configuration on each host to work with the virntup topo:
@@ -75,7 +76,7 @@ python3 virntup.py envgen \
     -o host.json \      # The desired output file
     -t bmv2             # The target we want to deploy to
 ```
-    - The generated `host.json` file can be used as an input for the setup scripts in the `testbed-env-setup` repository to configure the test hosts. **This has to be done prior to the deployment step**
+- The generated `host.json` file can be used as an input for the setup scripts in the `testbed-env-setup` repository to configure the test hosts. **This has to be done prior to the deployment step**
 
 - Finally we can deploy the virutal toplogy to the p4 target: 
 
@@ -89,7 +90,7 @@ python3 virntup.py deploy \
     --p4info p4.info.txt \
     --p4binary virntup.json
 ```
-    - Virntup will now deploy the p4 program to the target and add all the necessary table entries. 
+ - Virntup will now deploy the p4 program to the target and add all the necessary table entries. 
 
 ### Generated Artefacts 
 
