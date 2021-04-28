@@ -528,13 +528,20 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
     def get_representation(self):
         """get_representation.
 
-        Returns a string containing the DOT representation of the topology. 
+        Returns a string containing the DOT representation of the topology.
         """
         return self.prefix + self.node_rep + self.suffix
 
     def store_representation_to_file(self, file_fd):
+        """store_representation_to_file.
 
-            file_fd.write(self.dot_representation())
+        Parameters
+        ----------
+        file_fd :
+            File Descriptor to store representation to.
+        """
+
+        file_fd.write(self.dot_representation())
 
     def visit_vRouter(self, router):
         """visit_vRouter.
