@@ -1,16 +1,22 @@
 import json
+import sys
 import logging
-import topology
+
+import argparse
+from argparse import RawTextHelpFormatter
+
 import topology_generator
 import target_configurator
 from topology_controller import TopologyController
 
-import argparse
-from argparse import RawTextHelpFormatter
 LOG_FORMAT = '%(levelname)s - %(module)s - %(message)s'
 
 
 def main():
+    """main.
+
+    Virntup main - CLI for virntup
+    """
 
     parser = argparse.ArgumentParser(
         description="Virntup - Virtualized network topologies using P4")
@@ -22,7 +28,7 @@ def main():
     parser.add_argument(
         '-c', '--conf',
         type=argparse.FileType('r'),
-        help="""Path to the target definition json file. 
+        help="""Path to the target definition json file.
 This json file can contain all necessary configuration details. Like 
 { "target": "bmv2",               # bmv2 or tofino
     "env": "env.json",              # Path to the enviroment configuratioin file 
@@ -180,7 +186,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "Outfile is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         json.dump(ir, file, indent=4)
 
@@ -200,7 +206,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "env.json is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.intermediate_representation:
             ir = args.intermediate_representation
@@ -213,7 +219,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "ir.json is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.out_file:
             file = args.out_file
@@ -226,7 +232,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "Outfile is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.target:
             target = args.target
@@ -239,7 +245,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "Target is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if target == 'bmv2':
             topo_controller = TopologyController(env, ir_fd=ir)
@@ -265,7 +271,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "env.json is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.intermediate_representation:
             ir = args.intermediate_representation
@@ -278,7 +284,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "ir.json is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.target:
             target = args.target
@@ -291,7 +297,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "Target is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.hostname:
             hostname = args.hostname
@@ -304,7 +310,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "hostname is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.port:
             port = args.port
@@ -317,7 +323,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "port is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.p4info:
             p4info = args.p4info
@@ -330,7 +336,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "p4info is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         if args.p4binary:
             p4binary = args.p4binary
@@ -343,7 +349,7 @@ CLI parameters will overwrite the configuration if set.
         else:
             logging.error(
                 "p4binary is neither specified via CLI nor in configuration json")
-            exit(-1)
+            sys.exit()(-1)
 
         topo_controller = TopologyController(env, ir_fd=ir)
 
