@@ -53,6 +53,44 @@ To unclutter the CLI virntup can be fully configured using a `conf.json` contain
 
 If CLI parameters are provided additionally to the `conf.json` the CLI parameters will be preferred. 
 
+### Example workflow 
+> Each command provides a fairly comprehensive help. Try running 
+```bash
+python3 virntup.py -h
+```
+- First we need to choose which topology we would like to instantiate. In this case we go for the `minimal` option. 
+```bash
+python3 virntup.py topogen \
+    -t minimal \
+    -o ir.json
+```
+    - Virntup now creates an `ir.json` which contains a json representation of the generated toplogy. Have a look at the file, it is quite readable. 
+    > Try running `python3 virntup.py topogen -h` for more details
+
+- Now we need to create the host environment. The host environment contains the necessary configuration on each host to work with the virntup topo:
+```bash 
+python3 virntup.py envgen \
+    -e env.json \       # The target environment json file mentioned above
+    -ir ir.json \       # The topology representation we created in the first step
+    -o host.json \      # The desired output file
+    -t bmv2             # The target we want to deploy to
+```
+    - The generated `host.json` file can be used as an input for the setup scripts in the `testbed-env-setup` repository to configure the test hosts. **This has to be done prior to the deployment step**
+
+- Finally we can deploy the virutal toplogy to the p4 target: 
+
+```bash
+python3 virntup.py deploy \
+    -e env.json \
+    -ir ir.json \
+    -t bmv2 \
+    --hostname localhost \
+    --port 50051 \
+    --p4info p4.info.txt \
+    --p4binary virntup.json
+```
+    - Virntup will now deploy the p4 program to the target and add all the necessary table entries. 
+
 ### Generated Artefacts 
 
 - `ir.json`
