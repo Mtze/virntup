@@ -19,7 +19,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser(
-        description="Virntup - Virtualized network topologies using P4")
+        description="Virntup - Virtualized network topologies using P4", formatter_class=RawTextHelpFormatter)
 
     parser.add_argument('--debug',
                         action='store_true',
@@ -30,7 +30,7 @@ def main():
         type=argparse.FileType('r'),
         help="""Path to the target definition json file.
 This json file can contain all necessary configuration details. Like 
-{ "target": "bmv2",               # bmv2 or tofino
+{   "target": "bmv2",               # bmv2 or tofino
     "env": "env.json",              # Path to the enviroment configuratioin file 
     "ir": "ir.json",                # Path where the ir should be stored 
     "host": "host.json",            # Path where the host config should be stored
