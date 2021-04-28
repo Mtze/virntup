@@ -3,17 +3,13 @@ from abc import abstractmethod, ABC
 import logging
 
 
-"""
-The ADDRESS_SPACE variable holds the IP Address space used for topology
-generation. The Each _Node gets a  portion from this ADDRESS_SPACE
-during initialization.
-"""
+# The ADDRESS_SPACE variable holds the IP Address space used for topology
+# generation. The Each _Node gets a  portion from this ADDRESS_SPACE
+# during initialization.
 ADDRESS_SPACE = ipaddress.IPv4Network("10.42.0.0/16")
 
-"""
-The SUBNET_PREFIX allows to configure the desired network size each _Node
-gets assinged during initialization.
-"""
+# The SUBNET_PREFIX allows to configure the desired network size each _Node
+# gets assinged during initialization.
 SUBNET_PREFIX = 24
 
 
@@ -39,8 +35,8 @@ class V_topology:
         self.router = router
         logging.info("V_topology initialized")
 
-        logging.info("Using " + str(len(V_topology.available_subnets)) +
-                     " /" + str(SUBNET_PREFIX) + " subnets in " + str(ADDRESS_SPACE))
+        logging.info("Using {} /{} subnets in {} ".format(
+            len(V_topology.available_subnets), SUBNET_PREFIX, ADDRESS_SPACE))
 
     def get_next_free_subnet(node):
         """get_next_free_subnet.
@@ -58,10 +54,8 @@ class V_topology:
         """
 
         V_topology._next_subnet += 1
-        logging.debug("Assigned  " +
-                     str(V_topology.available_subnets[V_topology._next_subnet - 1]) +
-                     " to " + str(node)
-                     )
+        logging.debug("Assigned {} to {}".format(
+            V_topology.available_subnets[V_topology._next_subnet - 1], node))
         return V_topology.available_subnets[V_topology._next_subnet - 1]
 
     def set_root_router(self, router):
@@ -77,7 +71,7 @@ class V_topology:
         """
         assert isinstance(router, vRouter)
         self.router = router
-        logging.info("Router " + str(router) + " is new root router")
+        logging.info("Router {} is new root router".format(router))
 
     def apply_visitor(self, visitor):
         """apply_visitor.
@@ -161,7 +155,7 @@ class _Node(ABC):
         self.ipv4Adress = self.uplink_network.network_address + 1
         self.routingtable = []
 
-    @abstractmethod
+    @ abstractmethod
     def get_IR_representation(self, dict_builder):
         """get_IR_representation.
 
@@ -176,7 +170,7 @@ class _Node(ABC):
 
         raise NotImplementedError("This is an abstract class")
 
-    @abstractmethod
+    @ abstractmethod
     def accept(self, visitor):
         """accept.
         Abstract implementation which ensures that all _Node classes implement
@@ -276,12 +270,12 @@ class vRouter(_Node):
         dict_builder :
             dict of dicts, with structure: `{"vRouter": {}, "Host":{}}`
         """
-        logging.debug("Create IR representation of " +
-                      self.name + " " + str(self.id))
+        logging.debug(
+            "Create IR representation of {} {}".format(self.name, self.id))
         ir = {
             "name": self.name,
             "uplink_network": str(self.uplink_network),
-            "neighbors": [[x+1, str(self.neighours[x].id), self.neighours[x].type ] for x in range(len(self.neighours))],
+            "neighbors": [[x+1, str(self.neighours[x].id), self.neighours[x].type] for x in range(len(self.neighours))],
             "routingtable": [[self.routingtable[x][0], str(self.routingtable[x][1].compressed)] for x in range(len(self.routingtable))]
             # "routingtable" : str(self.routingtable)
         }
@@ -305,8 +299,8 @@ class vRouter(_Node):
             # Finally add route to shared network between us and current node
             self.routingtable.append((i+1, current_node.uplink_network))
 
-        logging.debug(str(self) + " has new routing table: " +
-                      str(self.routingtable))
+        logging.debug("{} has new routing table: {}".format(
+            self, self.routingtable))
 
 
 class Host(_Node):
@@ -333,7 +327,8 @@ class Host(_Node):
 
         subnet = self.uplink_network.compressed.split('.')[2]
         self.mac_address = "08:00:00:00:{}:{}".format(subnet, 1)
-        self.ip_address = str(self.uplink_network[1]) + "/" + str(SUBNET_PREFIX)
+        self.ip_address = str(
+            self.uplink_network[1]) + "/" + str(SUBNET_PREFIX)
 
     def accept(self, visitor):
         """accept.
@@ -380,7 +375,7 @@ class AbstractVTopologyVisitor(ABC):
     """
 
     @ abstractmethod
-    def visit_vRouter(self, vRouter):
+    def visit_vRouter(self, router):
         """visit_vRouter.
 
         Parameters
@@ -409,8 +404,6 @@ class AbstractPreOderVTopologyVisitor(AbstractVTopologyVisitor):
     visitors. Should not be instantiated.
     """
 
-    pass
-
 
 class AbstractPostOrderVTopologyVisitor(AbstractVTopologyVisitor):
     """AbstractPostOrderVTopologyVisitor.
@@ -418,8 +411,6 @@ class AbstractPostOrderVTopologyVisitor(AbstractVTopologyVisitor):
     This is just a meta class to distinguish between Pre and Post order
     visitors. Should not be instantiated.
     """
-
-    pass
 
 
 class UpdateRoutingTableVisitor(AbstractPostOrderVTopologyVisitor):
@@ -434,15 +425,15 @@ class UpdateRoutingTableVisitor(AbstractPostOrderVTopologyVisitor):
     added by this algorithm!
     """
 
-    def visit_vRouter(self, vRouter):
+    def visit_vRouter(self, router):
         """visit_vRouter.
 
         Parameters
         ----------
-        vRouter :
+        router :
             vRouter
         """
-        vRouter.set_routing_table()
+        router.set_routing_table()
 
     def visit_Host(self, host):
         """visit_Host.
@@ -459,15 +450,15 @@ class PostOrderPrintNodeVisitor(AbstractPostOrderVTopologyVisitor):
     """PostOrderPrintNodeVisitor.
     """
 
-    def visit_vRouter(self, vRouter):
+    def visit_vRouter(self, router):
         """visit_vRouter.
 
         Parameters
         ----------
-        vRouter :
+        router :
             vRouter
         """
-        print(vRouter)
+        print(router)
 
     def visit_Host(self, host):
         """visit_Host.
@@ -484,15 +475,15 @@ class PreOderPrintNodesVisitor(AbstractPreOderVTopologyVisitor):
     """PrintNodesVisitor.
     """
 
-    def visit_vRouter(self, vRouter):
+    def visit_vRouter(self, router):
         """visit_vRouter.
 
         Parameters
         ----------
-        vRouter :
+        router :
             vRouter
         """
-        print(vRouter)
+        print(router)
 
     def visit_Host(self, host):
         """visit_Host.
@@ -508,10 +499,10 @@ class PreOderPrintNodesVisitor(AbstractPreOderVTopologyVisitor):
 class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
     """DotRepresentationVisitor.
 
-    This Pre-Order Visitor assembles a [DOT](https://graphviz.org/doc/info/lang.html)
+    This Pre-Order Visitor assembles a [DOT](https://graphviz.org/doc/info/lang.html
     compatible representation of the topology.
 
-    It can be specified if the visualization should also contain the routing table. 
+    It can be specified if the visualization should also contain the routing table.
     This is switched of by default as it gets quite messy for big topologies.
 
     After the visitor was applied to the topology, the results can be obtained
@@ -537,12 +528,12 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
         """
         return self.prefix + self.node_rep + self.suffix
 
-    def visit_vRouter(self, vRouter):
+    def visit_vRouter(self, router):
         """visit_vRouter.
 
         Parameters
         ----------
-        vRouter :
+        router :
             vRouter
         """
         self.node_rep += vRouter.get_dot_representation(self.with_routingtable)
@@ -561,9 +552,9 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
 class IntermediateRepresentationVisitor(AbstractPreOderVTopologyVisitor):
     """IntermediateRepresentationVisitor
 
-    This visitor walks the toplogy and gathers the IR of each _Node 
-    in a builder dict. For the structure of the builder see the 
-    `toplogly.get_IR_representation()` method. 
+    This visitor walks the toplogy and gathers the IR of each _Node
+    in a builder dict. For the structure of the builder see the
+    `toplogly.get_IR_representation()` method.
     """
 
     def __init__(self):
@@ -571,15 +562,15 @@ class IntermediateRepresentationVisitor(AbstractPreOderVTopologyVisitor):
         """
         self.builder = {"vRouter": {}, "Host": {}}
 
-    def visit_vRouter(self, vRouter):
+    def visit_vRouter(self, router):
         """visit_vRouter.
 
         Parameters
         ----------
-        vRouter :
+        router :
             vRouter
         """
-        vRouter.get_IR_representation(self.builder)
+        router.get_IR_representation(self.builder)
 
     def visit_Host(self, host):
         """visit_Host.
