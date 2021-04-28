@@ -206,7 +206,7 @@ class vRouter(_Node):
         self.id = _Node.next_id
         self.type = 'vRouter'
         _Node.next_id += 1
-        self.neighours = []
+        self.neighbors = []
         super().__init__(name + str(self.id))
 
     def add_link(self, other_node):
@@ -217,7 +217,7 @@ class vRouter(_Node):
         other_node :
             _Node (So either vRouter or Host)
         """
-        self.neighours.append(other_node)
+        self.neighbors.append(other_node)
 
     def accept(self, visitor):
         """accept.
@@ -230,8 +230,8 @@ class vRouter(_Node):
         if isinstance(visitor, AbstractPreOderVTopologyVisitor):
             visitor.visit_vRouter(self)
 
-        for n in self.neighours:
-            n.accept(visitor)
+        for neighbor in self.neighbors:
+            neighbor.accept(visitor)
 
         if isinstance(visitor, AbstractPostOrderVTopologyVisitor):
             visitor.visit_vRouter(self)
@@ -246,7 +246,7 @@ class vRouter(_Node):
             contain the routing table
         """
         edges = ""
-        for n in self.neighours:
+        for n in self.neighbors:
             edges += str(self.id) + " -- " + str(n.id) + "\n"
 
         router_box = ""
@@ -276,7 +276,7 @@ class vRouter(_Node):
         ir = {
             "name": self.name,
             "uplink_network": str(self.uplink_network),
-            "neighbors": [[x+1, str(self.neighours[x].id), self.neighours[x].type] for x in range(len(self.neighours))],
+            "neighbors": [[x+1, str(self.neighbors[x].id), self.neighbors[x].type] for x in range(len(self.neighbors))],
             "routingtable": [[self.routingtable[x][0], str(self.routingtable[x][1].compressed)] for x in range(len(self.routingtable))]
             # "routingtable" : str(self.routingtable)
         }
@@ -286,10 +286,10 @@ class vRouter(_Node):
     def set_routing_table(self):
         """set_routing_table.
         """
-        for i in range(len(self.neighours)):
+        for i in range(len(self.neighbors)):
 
             # Store the current neighbour in a varaible for easy access
-            current_node = self.neighours[i]
+            current_node = self.neighbors[i]
 
             # Iterate over the routing table of the current node and add
             # all Networks to our routingtable with corresponding egress
@@ -537,7 +537,7 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
         router :
             vRouter
         """
-        self.node_rep += vRouter.get_dot_representation(self.with_routingtable)
+        self.node_rep += router.get_dot_representation(with_routingtable=self.with_routingtable)
 
     def visit_Host(self, host):
         """visit_Host.
@@ -559,6 +559,8 @@ class IntermediateRepresentationVisitor(AbstractPreOderVTopologyVisitor):
     """
 
     def __init__(self):
+        """__init__.
+        """
         """__init__.
         """
         self.builder = {"vRouter": {}, "Host": {}}

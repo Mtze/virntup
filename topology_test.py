@@ -30,6 +30,7 @@ class TestDotRepresentationVisitor(unittest.TestCase):
         dot_v = topology.DotRepresentationVisitor()
 
         topo = create_3_node_topo()
+        topo.update_all_routing_tables()
         topo.apply_visitor(dot_v)
 
         actual = dot_v.get_representation()
