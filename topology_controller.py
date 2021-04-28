@@ -1,11 +1,27 @@
-import topology
 import json
 import logging
 
+import topology
+
 
 class TopologyController:
+    """TopologyController.
+
+    Component which generates a mapping between a created topolgoy and a configured environment
+    """
 
     def __init__(self, env_json_fd, topo=None, ir_fd=None):
+        """__init__.
+
+        Parameters
+        ----------
+        env_json_fd :
+            env_json_fd - File descriptor for the env.json file
+        topo :
+            topo - topology object which should be deployed to the target
+        ir_fd :
+            ir_fd - File descriptor for the intermediate_representation json
+        """
         logging.debug(
             "New TopologyController with \n|->env:{}, \n|->topo: {}, \n|->ir: {}".format(env_json_fd, topo, ir_fd))
 
@@ -38,7 +54,6 @@ class TopologyController:
 
         for vRouter_id in self.ir['vRouter']:
             router = self.ir['vRouter'][vRouter_id]
-            current_router_rt_entries = []
             for neighbour in router["neighbors"]:
                 if neighbour[2] == 'vRouter':
 
@@ -91,6 +106,13 @@ class TopologyController:
                                 (entry[1], switch_port, mac))
 
     def deploy(self, target_connector):
+        """deploy.
+
+        Parameters
+        ----------
+        target_connector :
+            target_connector object which is used to deploy the mappping
+        """
 
         for router_index in self.port_mapping:
             ports = self.port_mapping[router_index]
@@ -108,9 +130,18 @@ class TopologyController:
                 router_index, topology.ADDRESS_SPACE.compressed, "08:00:00:00:00:00", ports[0])
 
     def get_host_config(self):
+        """get_host_config.
+        """
         return json.dumps(self.host_env)
 
     def store_host_config_json(self, json_path):
+        """store_host_config_json.
+
+        Parameters
+        ----------
+        json_path :
+            json_path
+        """
         logging.info("Store host-config to json file at {}".format(json_path))
 
         json.dump(self.host_env, json_path, indent=4)
