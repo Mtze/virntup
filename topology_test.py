@@ -1,20 +1,25 @@
-import topology
-from topology_generator import create_multi_layer_topo, create_3_node_topo
 import logging
 import unittest
+import topology
+from topology_generator import create_multi_layer_topo, create_3_node_topo
 
 logging.basicConfig(level=logging.INFO)
 
 
 ###########################################################
 class TestVRouter(unittest.TestCase):
-    pass
+    """TestVRouter.
+    """
 
 
 ###########################################################
 class TestDotRepresentationVisitor(unittest.TestCase):
+    """TestDotRepresentationVisitor.
+    """
 
     def test_3_node_topo(self):
+        """test_3_node_topo.
+        """
         expected = r"""graph graphname {
 1[shape=box]
 1 -- 2
@@ -31,6 +36,8 @@ class TestDotRepresentationVisitor(unittest.TestCase):
         self.assertMultiLineEqual(actual, expected)
 
     def test_multi_layer_topo(self):
+        """test_multi_layer_topo.
+        """
         expected = r"""graph graphname {
 1[shape=box]
 1 -- 2

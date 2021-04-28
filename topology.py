@@ -186,6 +186,7 @@ class _Node(ABC):
     def __str__(self):
         """__str__.
         """
+        # pylint: disable=no-member
         return "(" + self.name + "_" + str(self.id) + ")"
 
 

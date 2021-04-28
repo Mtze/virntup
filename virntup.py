@@ -162,7 +162,7 @@ CLI parameters will overwrite the configuration if set.
         logging.info("Generate topology of type {}".format(args.type))
 
         if args.type == 'minimal':
-            topo = topology_generator.create_2_layer_topo()
+            topo = topology_generator.create_3_node_topo()
 
         elif args.type == 'medium':
             topo = topology_generator.create_4_node_topo()

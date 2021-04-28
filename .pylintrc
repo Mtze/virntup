@@ -145,6 +145,8 @@ disable=print-statement,
         missing-module-docstring, 
         invalid-name,
         no-self-argument,
+        too-many-statements,
+        too-many-branches,
         import-error
 
 # Enable the message, report, category or checker with the given id(s). You can
