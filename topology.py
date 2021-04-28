@@ -523,11 +523,18 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
         self.node_rep = ""
         self.suffix = "}"
         self.with_routingtable = with_routingtable
+        self.was_executed = False
 
     def get_representation(self):
         """get_representation.
+
+        Returns a string containing the DOT representation of the topology. 
         """
         return self.prefix + self.node_rep + self.suffix
+
+    def store_representation_to_file(self, file_fd):
+
+            file_fd.write(self.dot_representation())
 
     def visit_vRouter(self, router):
         """visit_vRouter.
@@ -537,7 +544,9 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
         router :
             vRouter
         """
-        self.node_rep += router.get_dot_representation(with_routingtable=self.with_routingtable)
+        self.was_executed = True
+        self.node_rep += router.get_dot_representation(
+            with_routingtable=self.with_routingtable)
 
     def visit_Host(self, host):
         """visit_Host.
@@ -547,6 +556,7 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
         host :
             host
         """
+        self.was_executed = True
         self.node_rep += host.get_dot_representation()
 
 

@@ -6,6 +6,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 
 import topology_generator
+import topology
 import target_configurator
 from topology_controller import TopologyController
 
@@ -64,6 +65,12 @@ CLI parameters will overwrite the configuration if set.
         '-o', '--out-file',
         type=argparse.FileType('w'),
         help="Path to the file in which the topology representation should be stored - Default is `ir.json`"
+    )
+
+    topogen_parser.add_argument(
+        '-d', '--dot',
+        type=argparse.FileType('w'),
+        help="Create dot represenetation and store the dot file to the path given."
     )
 
     # Define Arguments for the env generation
@@ -172,6 +179,12 @@ CLI parameters will overwrite the configuration if set.
 
         topo.update_all_routing_tables()
         ir = topo.get_IR_representation()
+
+        if args.dot:
+            # Create and store DOT representation if CLI param was set
+            dot_visit = topology.DotRepresentationVisitor(True)
+            topo.apply_visitor(dot_visit)
+            dot_visit.store_representation_to_file(args.dot)
 
         if args.out_file:
             file = args.out_file
