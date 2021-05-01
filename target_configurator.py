@@ -44,7 +44,7 @@ class TargetConnector:
                         config=shell.FwdPipeConfig(p4info_path, p4binary_path)
                         )
 
-    def insert_route(match_vRouter_number,
+    def insert_route(self, match_vRouter_number,
                      match_ipv4address,
                      action_dest_mac,
                      action_egress_port):
@@ -72,7 +72,7 @@ class TargetConnector:
         entry.action["dstAddr"] = str(action_dest_mac)
         entry.insert()
 
-    def insert_vRouter_port_mapping(match_ingress_port, action_vRouter_number):
+    def insert_vRouter_port_mapping(self, match_ingress_port, action_vRouter_number):
         """insert_vRouter_port_mapping.
 
         Assing ingress port to vRouter
