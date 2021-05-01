@@ -59,8 +59,15 @@ CLI parameters will overwrite the configuration if set.
         '-t', '--type',
         help="Toplogoy type to be generated",
         required=True,
-        choices=['minimal', 'medium', 'large']
+        choices=['minimal', 'medium', 'large', 'n_hops']
     )
+
+    topogen_parser.add_argument(
+        '--hops',
+        type=int,
+        help="Only a valid parameter if type `n_hops` was chosen. Define the number of routers between two hosts"
+    )
+
     topogen_parser.add_argument(
         '-o', '--out-file',
         type=argparse.FileType('w'),
@@ -176,6 +183,14 @@ CLI parameters will overwrite the configuration if set.
 
         elif args.type == 'large':
             topo = topology_generator.create_multi_layer_topo()
+
+        elif args.type == 'n_hops':
+            if not args.hops or args.hops < 1:
+                logging.error(
+                    "For type `n_hops` a number of hops has to be specified using --hops <int>")
+                sys.exit()(-1)
+
+            topo = topology_generator.create_n_hop_topo(int(args.hops))
 
         topo.update_all_routing_tables()
         ir = topo.get_IR_representation()

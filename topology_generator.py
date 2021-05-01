@@ -76,3 +76,23 @@ def create_multi_layer_topo():
             for _ in range(2):
                 l2.add_link(topology.Host())
     return topo
+
+
+def create_n_hop_topo(n_hops):
+    logging.info("Instantiate new {} hop topology".format(n_hops))
+
+    _reset_topo_id_counter()
+
+    root = topology.vRouter()
+    topo = topology.V_topology(root)
+
+    current_router = root
+    for count in range(n_hops - 1):
+        tmp = topology.vRouter()
+        current_router.add_link(tmp)
+        current_router = tmp
+
+    root.add_link(topology.Host())
+    current_router.add_link(topology.Host())
+
+    return topo
