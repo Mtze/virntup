@@ -246,12 +246,12 @@ class vRouter(_Node):
             contain the routing table
         """
         edges = ""
-        for n in self.neighbors:
-            edges += str(self.id) + " -- " + str(n.id) + "\n"
+        for idx, n in enumerate(self.neighbors):
+            edges += '{} -- {} [headlabel = 0, taillabel="{}"] \n'.format(self.id, n.id, idx + 1) 
 
         router_box = ""
         if with_routingtable:
-            router_box = str(self.id) + "[\nlabel = \"{" + str(self.id)
+            router_box = str(self.id) + "[\nlabel = \"{" + str(self.name)
             for route in self.routingtable:
                 router_box += "|" + str(route)
             router_box += "}\" \nshape=\"record\"]\n"
@@ -363,7 +363,7 @@ class Host(_Node):
     def get_dot_representation(self):
         """get_dot_representation.
         """
-        return str(self.id) + "\n"
+        return '{} [label="{} \n {} \n {}"]\n'.format(self.id, self.name, self.ip_address, self.mac_address) 
 
     def set_routing_table(self):
         """set_routing_table.
