@@ -32,7 +32,7 @@ lint:
 
 test:
   script:
-    - pytest topology_test.py --junitxml=report.xml
+    - pytest virntup/topology_test.py --junitxml=report.xml
   artifacts:
     reports:
       junit: report.xml
