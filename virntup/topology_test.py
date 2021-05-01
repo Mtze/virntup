@@ -1,7 +1,8 @@
 import logging
 import unittest
-import topology
-from topology_generator import create_multi_layer_topo, create_3_node_topo
+
+from . import topology
+from . import topology_generator
 
 logging.basicConfig(level=logging.INFO)
 
@@ -29,7 +30,7 @@ class TestDotRepresentationVisitor(unittest.TestCase):
 }"""
         dot_v = topology.DotRepresentationVisitor()
 
-        topo = create_3_node_topo()
+        topo = topology_generator.create_3_node_topo()
         topo.update_all_routing_tables()
         topo.apply_visitor(dot_v)
 
@@ -103,7 +104,7 @@ class TestDotRepresentationVisitor(unittest.TestCase):
 31
 }"""
 
-        topo = create_multi_layer_topo()
+        topo = topology_generator.create_multi_layer_topo()
         dot_v = topology.DotRepresentationVisitor()
         topo.apply_visitor(dot_v)
 

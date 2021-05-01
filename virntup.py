@@ -5,10 +5,9 @@ import logging
 import argparse
 from argparse import RawTextHelpFormatter
 
-import topology_generator
-import topology
-import target_configurator
-from topology_controller import TopologyController
+from virntup import topology_generator
+from virntup import topology
+from virntup.topology_controller import TopologyController
 
 LOG_FORMAT = '%(levelname)s - %(module)s - %(message)s'
 

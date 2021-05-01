@@ -1,5 +1,6 @@
 import logging
-import topology
+
+from . import topology
 
 
 def _reset_topo_id_counter():

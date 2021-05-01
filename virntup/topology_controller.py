@@ -1,7 +1,7 @@
 import json
 import logging
 
-import topology
+from . import topology
 
 
 class TopologyController:
