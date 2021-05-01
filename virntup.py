@@ -362,9 +362,8 @@ CLI parameters will overwrite the configuration if set.
             logging.info(
                 "Using config json for {} - {}".format("p4info", conf['p4info']))
         else:
-            logging.error(
-                "p4info is neither specified via CLI nor in configuration json")
-            sys.exit()(-1)
+            logging.info(
+                "p4info is neither specified via CLI nor in configuration json - assuming no configuration should be deployed")
 
         if args.p4binary:
             p4binary = args.p4binary
@@ -376,8 +375,7 @@ CLI parameters will overwrite the configuration if set.
                 "Using config json for {} - {}".format("p4binary", conf['p4binary']))
         else:
             logging.error(
-                "p4binary is neither specified via CLI nor in configuration json")
-            sys.exit()(-1)
+                "p4binary is neither specified via CLI nor in configuration json - assuming no configuration should be deployed")
 
         topo_controller = TopologyController(env, ir_fd=ir)
 
