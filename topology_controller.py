@@ -114,6 +114,9 @@ class TopologyController:
             target_connector object which is used to deploy the mappping
         """
 
+        logging.debug(self.port_mapping)
+        logging.debug(self.route_mapping)
+
         for router_index in self.port_mapping:
             ports = self.port_mapping[router_index]
             for port in ports:
