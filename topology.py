@@ -541,7 +541,7 @@ class DotRepresentationVisitor(AbstractPreOderVTopologyVisitor):
             File Descriptor to store representation to.
         """
 
-        file_fd.write(self.dot_representation())
+        file_fd.write(self.get_representation())
 
     def visit_vRouter(self, router):
         """visit_vRouter.
