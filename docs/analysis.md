@@ -50,6 +50,6 @@ During this project, we will implement a framework that is intended to simplify 
 - The system has to be configurable via a Command Line Interface (CLI). All possible network configurations have to be represented as text-files.
 
 ## Analysis Object Model 
-![AOM](img/AOM.png)
+![AOM](docs/img/AOM.png)
 
 
