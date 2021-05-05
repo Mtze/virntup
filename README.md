@@ -1,16 +1,24 @@
-# VirNTUP_4
+# VirNTUP
 
-Virtualized Network Topologies using P_4 - IDP at I8 
+Virtualized Network Topologies using P_4 - Interdisciplinary Project at the [Chair of Network Architectures and Services](https://www.net.in.tum.de) during my Masters Degree. 
 
 ## What is virntup?
+
+Virntup is just a proof of concept, to show that virualizing topologies using P4 hardware is actually possible and measuring the performance of virutalized topologies to compare it to their physical counterparts.
+While Virntup is just a prototype, it is build fully extensible and adaptable. The code is well documented and design documents are provided to simplify the usage and foster further development of the tool. 
+
+Currently virnup has the following limitations: 
+- Only supports IPv4 
+- ARP is not supported, all hosts connected to the virtual topology have to configure their ARP table manually
+- ICMP is not supported 
+- Up until now only tree-topologies are supported
+
+The P4 implementation (called VirNTUP_4) of the router is very basic. The focus of this project was on the control plane. Due to the modular design of virntup, it should be possible fairly easy to adapt the connector to work with other p4 implementations. 
 
 ## Motivation 
 
 Traffic flows in data centers are often of interest for network researchers. However, creating and maintaining network infrastructure of this scale solely for measurements is expensive and tedious to maintain.
 Virntup should simplify the process of creating and maintaining data center topologies using programmable P4 switches. Hence defining, instantiating and adapting topologies on the fly becomes possible and fully automatable. 
-
-Virntup is just a proof of concept, to show that virualizing topologies is actually possible and measuring the performance to compare it to their physical counterparts.
-While Virntup is just a prototype, it is build fully extensible and adaptable. The code is well documented and design documents are provided to simplify the usage and foster further development of the tool. 
 
 ## Usage
 
