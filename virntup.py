@@ -7,6 +7,7 @@ from argparse import RawTextHelpFormatter
 
 from virntup import topology_generator
 from virntup import topology
+from virntup import target_configurator
 from virntup.topology_controller import TopologyController
 
 LOG_FORMAT = '%(levelname)s - %(module)s - %(message)s'

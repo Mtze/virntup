@@ -6,6 +6,12 @@ Virtualized Network Topologies using P_4 - IDP at I8
 
 ## Motivation 
 
+Traffic flows in data centers are often of interest for network researchers. However, creating and maintaining network infrastructure of this scale solely for measurements is expensive and tedious to maintain.
+Virntup should simplify the process of creating and maintaining data center topologies using programmable P4 switches. Hence defining, instantiating and adapting topologies on the fly becomes possible and fully automatable. 
+
+Virntup is just a proof of concept, to show that virualizing topologies is actually possible and measuring the performance to compare it to their physical counterparts.
+While Virntup is just a prototype, it is build fully extensible and adaptable. The code is well documented and design documents are provided to simplify the usage and foster further development of the tool. 
+
 ## Usage
 
 ### Install 
@@ -58,6 +64,7 @@ If CLI parameters are provided additionally to the `conf.json` the CLI parameter
 ```bash
 python3 virntup.py -h
 ```
+
 - First we need to choose which topology we would like to instantiate. In this case we go for the `minimal` option. 
 ```bash
 python3 virntup.py topogen \
@@ -71,10 +78,10 @@ python3 virntup.py topogen \
 - Now we need to create the host environment. The host environment contains the necessary configuration on each host to work with the virntup topo:
 ```bash 
 python3 virntup.py envgen \
-    -e env.json \       # The target environment json file mentioned above
-    -ir ir.json \       # The topology representation we created in the first step
-    -o host.json \      # The desired output file
-    -t bmv2             # The target we want to deploy to
+    -e env.json \
+    -ir ir.json \
+    -o host.json \
+    -t bmv2
 ```
 - The generated `host.json` file can be used as an input for the setup scripts in the `testbed-env-setup` repository to configure the test hosts. **This has to be done prior to the deployment step**
 
