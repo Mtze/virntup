@@ -1,9 +1,12 @@
+# Analysis
 
-## Topology 
+## Requiremen Elicitation
 
-## Topology Generator
+### Functional Requirements
 
-## Topology Controller
+### Non-Functional Requirements
 
-## Target Configurator
+## Analysis Object Model 
+![AOM](img/AOM.png)
+
 
