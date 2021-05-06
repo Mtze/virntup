@@ -1,6 +1,6 @@
 # VirNTUP
 
-Virtualized Network Topologies using P_4 - Interdisciplinary Project at the [Chair of Network Architectures and Services](https://www.net.in.tum.de) during my Masters Degree. (Instructors @gallenmu @scholzd)
+Virtualized Network Topologies using P_4 - Interdisciplinary Project at the [Chair of Network Architectures and Services](https://www.net.in.tum.de) during my Masters Degree. (Instructors [@gallenmu](https://github.com/gallenmu/) [@scholzd](https://github.com/scholzd))
 
 ## What is virntup?
 
