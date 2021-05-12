@@ -352,6 +352,9 @@ CLI parameters will overwrite the configuration if set.
             logging.error(
                 "port is neither specified via CLI nor in configuration json")
             sys.exit()(-1)
+        
+        p4info = None
+        p4binary = None
 
         if args.p4info:
             p4info = args.p4info
