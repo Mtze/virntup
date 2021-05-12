@@ -38,16 +38,27 @@ This environment is represented as `env.json` file containing all the loops and 
 > Note, that for the sake of simplicity we used the physical port number on the target. These ports might have different IDs internally. Later we need to use these internal IDs!
 
 ### P4 Implementation
-> See [here](https://github.com/Mtze/virntup_4) for the P4 implementation
+> See [here](https://github.com/Mtze/virntup_4) for the P4 implementation. 
 
 ## Components 
+After carefully reviewing the [Analysis Object Model](analysis.md#AOM) we came up with the following design: 
 
 ![System design overview](img/SD.png)
 
+We now will discuss each Component in detail. 
 
 ### Topology
-
 ![Topology UML](img/SD_topology.png)
+
+The `Topology` Subsystem represents a virtual topology and all its entities. The `vTopology` class forms the Interface to the outside and allows interactions with the topology.
+Each Topology in virntup is represented as `vTopology` object. A `vTopology` consists of `_Nodes` (which is an abstract class). 
+For the sake of this project we limited ourselves to tree-topologies. Hence we incorporated the _Composite Pattern_ for the tree structure. 
+In future iterations this might change, but for our purposes trees are sufficient and are easy to handle. 
+The tree-root is formed by a `vRouter`. Each `vRouter` can be connected to many `_Node`s (So either `vRouter`s or `Hosts`). A `Host` on the other hand can be connected to exactly one `vRouter`. 
+
+To walk the topology we used another common design pattern: the _visitor pattern_. Each `_Node` has an `accept(visitor)` method which specifies the walk behavior. 
+The `AbstractVTopologyvisitor` taxonomy on the right shows the currently available visitors. These visitors are used to generate the Dot-visualtization as well as the generation of the Intermediate representation. 
+By using the visitor pattern, we achieved great extensibility as new visitors can be added easily. 
 
 
 ### Topology Generator
