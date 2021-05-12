@@ -92,3 +92,5 @@ This mapping is then deployed to the Target via the `Target Connector`.
 # Deployment 
 
 ![Deployment Diagram](img/SD_Deployment.png)
+
+In this diagram the Hardware Software Mapping is shown. As you can see, virntup can be deployed to an external host, communicating with the [`PI`](https://github.com/p4lang/PI) server on the P4 Target. 
