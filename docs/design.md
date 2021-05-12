@@ -65,6 +65,12 @@ By using the visitor pattern, we achieved great extensibility as new visitors ca
 
 ![Topology Generator UML](img/SD_topology_generator.png)
 
+The `Topology Generator` Subsystem is responsible for instantiating `vTopologies` automatically. The `Toplology Generator` class implements some example topologies. 
+- `create_3_node_topo()` Create an `vTopology` with 2 `Host`s and 1 `vRouter`. Both `Hosts` are connected to the router.
+- `create_4_node_topo()` Creates an `vTopology` with 2 `Host`s and 2 `vRouter`s. Each host is connected to one of the routers and the routers are connected to each other. 
+- ...
+
+In the future this could be extended with more elaborated topology patterns. 
 
 ### Topology Controller and Target Configurator
 
