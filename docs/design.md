@@ -41,7 +41,7 @@ This environment is represented as `env.json` file containing all the loops and 
 > See [here](https://github.com/Mtze/virntup_4) for the P4 implementation. 
 
 ## Components 
-After carefully reviewing the [Analysis Object Model](analysis.md#AOM) we came up with the following design: 
+After carefully reviewing the [Analysis Object Model](analysis.md#analysis-object-model) we came up with the following design: 
 
 ![System design overview](img/SD.png)
 
