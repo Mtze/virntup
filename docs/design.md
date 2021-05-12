@@ -20,7 +20,7 @@ This environment is represented as `env.json` file containing all the loops and 
         ["h3", 25]
     ],
 
-    "links":
+    "links": [
         [1,2], 
         [7,8], 
         [9,10], 
@@ -32,6 +32,7 @@ This environment is represented as `env.json` file containing all the loops and 
         [19,20], 
         [29,30], 
         [31,32] 
+    ]
 }
 ```
 > Note, that for the sake of simplicity we used the physical port number on the target. These ports might have different IDs internally. Later we need to use these internal IDs!
