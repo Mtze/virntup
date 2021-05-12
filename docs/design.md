@@ -76,6 +76,18 @@ In the future this could be extended with more elaborated topology patterns.
 
 ![Topology Controler UML](img/SD_topo_controller_target_configurator.png)
 
+The combination of `Target Configurator` and `Topology Controller` are responsible for deploying a `vTopology` to a `P4 Target`. 
+The `Target Configurator` subsystem contains the `Target_Connector` class which provides an abstraction for inserting routes in to the routing table of an `vRouter` as well as an abstraction for configuring the mapping between a pyhiscal port on the target and an `vRouter`.
+
+This class uses the `P4 Runtime Shell` component which is an python library provided by the P4 community. 
+It allows to connect to P4 Runtime Servers and configure the Match Action tables on the switch. 
+Further details about P4 Runtime shell can be found [here](https://github.com/p4lang/p4runtime-shell).
+
+> Note that the `Target Connector` class is Program dependent. If the P4 implementation changes, this class has to be updated! 
+
+The `Topology Controller` subsystems calculates a mapping between logical links in the `vTopology` an physical links which are present on the Target.
+This mapping is then deployed to the Target via the `Target Connector`. 
+
 
 # Deployment 
 
