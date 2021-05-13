@@ -1,25 +1,26 @@
 # Analysis
 
 ## Requirement Elicitation
-During Requirements Elicitation we try to formalize the desired system as precise as possible. The Analysis should act as guide during system design and can later be used to assess if the system which was build actually implements the requirements. As this project is fairly open, the requirements are not very strict. However, we tried to fix some corner-stones. 
+During requirements elicitation we try to formalize the desired system as precise as possible. The analysis should act as guide during system design and can later be used to assess if the system which was built actually implements the requirements. As this project is fairly open, the requirements are not very strict. However, we tried to fix some corner-stones. 
 
 
 ### Proposed System 
 
-During this project, we will implement a framework that is intended to simplify network measurements in large scale scenarios. The framework should offer the functionality to define an arbitrary topology in a structured way, that can be instantiated on a P4 capable switch.
+During this project, we will implement a framework that is intended to simplify network measurements in large scale scenarios. The framework should offer the functionality to define an arbitrary topology in a structured way, that can be instantiated on a P4 capable switch (P4 Target).
+Using virnutp a researcher should be able to connect multiple hosts to the P4 capabale switch which can be used to ingest/receive traffic.
 
 ### Functional Requirements
-- The system can instantiate multiple virtual routers on one physical P4 device.
+- The system can instantiate multiple virtual routers on a P4 capable switch.
 - Each virtual router can be configured individually, including 
-   - the number of ports and corresponding Address spaces
+   - the number of ports and corresponding address spaces
    - the links to other virtual router or hosts
-- A mapping from logical ports on a virtual router to physical port on the P4 device can be defined.
-- A topology can be configured by the user. A Topology includes optional definition of network ranges.
-- The system allows to generate Topologies based on predefined structures e.g.
-   - Tree with one router and two hosts 
-   - Tree with two routers connected to each other and one host connected to each router. 
-   - A balanced tree 3 layers deep, each router is connected to three router below. Each edge router is then connected to two hosts.
-   - A n-hop chain of virtual routers with one host on each end
+- A mapping from logical ports on a virtual router to physical ports on the P4 device can be defined.
+- A topology can be configured by the user. 
+- The system allows to generate topologies based on predefined structures e.g.
+   - tree with one router and two hosts.
+   - tree with two routers connected to each other and one host connected to each router. 
+   - a balanced tree - 3 layers deep. each router is connected to 3 routers below. Each edge-router is then connected to 2 hosts.
+   - a n-hop chain of virtual routers with one host on each end.
 - Both IPv4 and IPv6 have to be supported.
 - The system implements static routing. The system creates routing tables derived from the topology information.
 - The following metrics will be measured with the system using load generators on the connected hosts.
@@ -28,7 +29,7 @@ During this project, we will implement a framework that is intended to simplify 
    - Loss-rate
 - A configuration can be deployed directly to a P4 device
 - The system creates a visualisation of the configured topology.
-- [Optional] The system allows to create virtual links between virtual switches.
+- [Optional] The system allows to create virtual links between virtual routers.
 - [Optional] The system verifies if the physical wiring corresponds to the desired topology.
 
 ### Non-Functional Requirements
@@ -39,8 +40,8 @@ During this project, we will implement a framework that is intended to simplify 
 #### Supportability 
 - The system has to be extensible. 
   - New deployment targets may be added in the future. 
-  - New topology types may be added by the user 
-  - P4 implementation may be adapted and should require minimal changes to the deployment system
+  - New topology types may be added by the user.
+  - The P4 implementation may be adapted and should require minimal changes to the deployment system.
 
 #### Implementation 
 - The network topology has to be represented by a P4_16 capable switch. Namely 
@@ -55,27 +56,27 @@ During this project, we will implement a framework that is intended to simplify 
 During analysis the following components and important entities were identified: 
 ![AOM](img/AOM.png)
 
-- **P4 Target**: The P4 Target component groups all important assets related to a switch implementation. This P4 Target can either be a `BMv2` ([Behavioral Model Version 2](https://github.com/p4lang/behavioral-model) which is a reference implementation of a P4 Target provided by the P4Lang community) or a `tofino` Target ((Hardware implementation by Intel)[https://ark.intel.com/content/www/us/en/ark/products/210606/intel-tofino.html]). A `P4 Target` consists of: 
-   - `P4 Target compiler`: Each Target brings its own compiler which translates the `P4 Program` to a target dependent binary. This compiler is provided by the Target vendor 
+- **P4 Target**: The P4 Target component groups all important assets related to a switch implementation. This P4 Target can either be a `BMv2` ([Behavioral Model Version 2](https://github.com/p4lang/behavioral-model) which is a reference implementation of a P4 Target provided by the P4Lang community) or a `tofino` Target ([Hardware implementation by Intel](https://ark.intel.com/content/www/us/en/ark/products/210606/intel-tofino.html)). A `P4 Target` consists of: 
+   - `P4 Target Compiler`: Each Target brings its own compiler which translates the `P4 Program` to a target dependent binary. This compiler is provided by the Target vendor 
    - `Physical Ports`: A target has `n` physical ports that can be used as ingress/egress by the `P4 Program`. 
-   - `P4 Binary`: A binary generated by the `P4 Target compiler` which resembles a `P4 Program` in a target dependant fashion. 
-   - `Control Plane` implementation: The control plane is responsible for managing `Match Action Tables` the data plane (here modeled as `P4 Binary`) can use to process packets. The tables are defined in the `P4 Binary` and can be accessed via the `Control Plane`
+   - `P4 Binary`: A binary generated by the `P4 Target Compiler` which resembles a `P4 Program` in a target dependant fashion. 
+   - `Control Plane` implementation: The control plane is responsible for managing `Match Action Tables`, the data plane (here modeled as `P4 Binary`) can use to process packets. The tables are defined in the `P4 Binary` and can be accessed via the `Control Plane`
    - `P4 Target Configuration Interface`: This class exposes an API to the outside world which allows external services to access and configure the `Control Plane`
 - **P4 Program Manager**: This component is responsible for managing the `P4 Program` which should be deployed to a specific target. It consists of: 
-   - `P4 Program` which should be deployed. This program should allow the instantiation of `Logical Toppology`s
+   - `P4 Program` which should be deployed. This program should allow the instantiation of `Logical Topologys`
    - `P4 Program Controller`: Which compiles the `P4 Program` for the desired `P4 Target` using the `P4 Target Compiler`. 
 - **P4 Target Configurator** This component provides an target independent abstraction for the `Topology Controller` to deploy a desired `Logical Topolgy` to a `P4 Target` of some sort. 
    - `Target Connector`: This class uses the `P4 Target Configuration Interface` to configure the `Match Action Tables` in the P4 Target. 
-   - `Target Definition`: Stores all the configuration parameters which are necessary to connect and configure the `P4 Target`
-- **Topology Manager**: This component creates a mapping between `Logical Ports` in the `Locgical Topology` and `Physical Ports` on the `P4 Target`. This mapping is calculated and translated to `Match Action Table` entries 
+   - `Target Definition`: Stores all the configuration parameters which are necessary to connect and configure the `P4 Target`.
+- **Topology Manager**: This component creates a mapping between `Logical Ports` in the `Locgical Topology` and `Physical Ports` on the `P4 Target`. This mapping is calculated and translated to `Match Action Table` entries.
    - `Topology Controller`: Uses the `Target Definition` and the `Logical Topology` to calculate a mapping between logical and physical ports. 
-   - `Control Plane Configuration`: resembles the calculated mapping as `Match Action Table` entries
-   - `Logical Port Mapping`: Stores the mapping of logical and physical ports
+   - `Control Plane Configuration`: Resembles the calculated mapping as `Match Action Table` entries.
+   - `Logical Port Mapping`: Stores the mapping of logical and physical ports.
 - **Topology Generator**
-   - `Topology Generator`: is responsible for creating virtual topologies which can be instantiated on a `P4 Target`
+   - `Topology Generator`: Is responsible for creating virtual topologies which can be instantiated on a `P4 Target`.
 - **Topology**
    - `Logical Topology`: Resembles a topology which is created by the `Topology Generator` and can be used by the `Topology Controller`. A `Virtual Topology` consists of: 
       - `Link`: Is a connection between two `Logical Ports` (Like a virtual wire)
       - `vRouter`: Is a routing entity in the logical network. A `vRouter` can have many `Logical Ports`
       - `Host`: Is a logical endpoint in the `Topology` and has exactly one `Logical Port`
-   - `Logical Port`: Resembles a Port to either a `vRouter` or a `Host` ans is used by the `Topology Manager` to calculate a mapping to `Physical Ports`
+   - `Logical Port`: Resembles a port to either a `vRouter` or a `Host` and is used by the `Topology Manager` to calculate a mapping to `Physical Ports`.
