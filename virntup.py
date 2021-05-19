@@ -282,8 +282,6 @@ CLI parameters will overwrite the configuration if set.
         elif target == 'tofino':
             topo_controller = TopologyController(env, ir_fd=ir)
             topo_controller.store_host_config_json(file)
-            # TODO
-            #logging.error("`{}` Is not yet implemented".format(target))
         else:
             logging.error("`{}` Is not a supported Target".format(target))
 
