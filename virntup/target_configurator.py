@@ -66,7 +66,7 @@ class TargetConnector:
 
         entry = shell.TableEntry("MyIngress.ipv4NextHopLPM")(
             action="MyIngress.ipv4Forward")
-        entry.match["vSwitchNumber"] = str(match_vRouter_number)
+        entry.match["vRouterNumber"] = str(match_vRouter_number)
         entry.match["hdr.ipv4.dstAddr"] = str(match_ipv4address)
         entry.action["port"] = str(action_egress_port)
         entry.action["dstAddr"] = str(action_dest_mac)
@@ -85,8 +85,8 @@ class TargetConnector:
             int
         """
 
-        entry = shell.TableEntry("MyIngress.vSwitchNumberMatching")(
+        entry = shell.TableEntry("MyIngress.vRouterNumberMatching")(
             action="MyIngress.setVSwitchNumber")
         entry.match["standard_metadata.ingress_port"] = str(match_ingress_port)
-        entry.action["vSwitchNumberFromTable"] = str(action_vRouter_number)
+        entry.action["vRouterNumberFromTable"] = str(action_vRouter_number)
         entry.insert()
