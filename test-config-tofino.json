@@ -1,0 +1,11 @@
+
+{ 
+    "target": "tofino",
+    "env": "../env-setup/environments/bitstamp-native/env.json",
+    "ir": "ir.json",
+    "host": "host.json",
+    "hostname": "localhost",
+    "port": 50051,
+    "p4info": "./virntup_4/binaries/tofino/virntup.p4info.pb.txt",
+    "p4binary": "./virntup_4/binaries/tofino/virntup.bin"
+}

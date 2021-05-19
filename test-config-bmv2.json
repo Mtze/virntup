@@ -1,0 +1,11 @@
+
+{ 
+    "target": "bmv2",
+    "env": "../env-setup/environments/large/env.json",
+    "ir": "ir.json",
+    "host": "host.json",
+    "hostname": "localhost",
+    "port": 50051,
+    "p4info": "./vrintup_4/binaries/bmv2/virntup.p4.p4info.txt",
+    "p4binary": "./vrintup_4/binaries/bmv2/virntup.json"
+}
