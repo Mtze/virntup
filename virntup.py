@@ -280,8 +280,10 @@ CLI parameters will overwrite the configuration if set.
             topo_controller.store_host_config_json(file)
             logging.info("Successfully created host configuration")
         elif target == 'tofino':
+            topo_controller = TopologyController(env, ir_fd=ir)
+            topo_controller.store_host_config_json(file)
             # TODO
-            logging.error("`{}` Is not yet implemented".format(target))
+            #logging.error("`{}` Is not yet implemented".format(target))
         else:
             logging.error("`{}` Is not a supported Target".format(target))
 
@@ -352,7 +354,7 @@ CLI parameters will overwrite the configuration if set.
             logging.error(
                 "port is neither specified via CLI nor in configuration json")
             sys.exit()(-1)
-        
+
         p4info = None
         p4binary = None
 
