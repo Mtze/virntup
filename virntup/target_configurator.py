@@ -90,3 +90,6 @@ class TargetConnector:
         entry.match["standard_metadata.ingress_port"] = str(match_ingress_port)
         entry.action["vRouterNumberFromTable"] = str(action_vRouter_number)
         entry.insert()
+
+    def teardown(self):
+        shell.teardown()

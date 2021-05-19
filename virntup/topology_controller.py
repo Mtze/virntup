@@ -132,6 +132,8 @@ class TopologyController:
             target_connector.insert_route(
                 router_index, topology.ADDRESS_SPACE.compressed, "08:00:00:00:00:00", ports[0])
 
+        target_connector.teardown() 
+
     def get_host_config(self):
         """get_host_config.
         """
