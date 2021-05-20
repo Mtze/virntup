@@ -2,6 +2,7 @@
 { 
     "target": "tofino",
     "env": "../env-setup/environments/bitstamp-native/env.json",
+    "port_config": "../env-setup/tofino_env/tofino/port_setup_template",
     "ir": "ir.json",
     "host": "host.json",
     "hostname": "localhost",

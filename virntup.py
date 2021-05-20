@@ -127,6 +127,11 @@ CLI parameters will overwrite the configuration if set.
     )
 
     deploy_parser.add_argument(
+        '--port_config',
+        type=argparse.FileType('r'),
+        help='Path to the tofino port configuration file - Will be sent to the bf_shell'
+    )
+    deploy_parser.add_argument(
         '--hostname',
         help='fqdn/ip of the P4 Runtime target'
     )
@@ -327,6 +332,19 @@ CLI parameters will overwrite the configuration if set.
                 "Target is neither specified via CLI nor in configuration json")
             sys.exit()(-1)
 
+        if args.port_config:
+            port_config = args.port_config
+            logging.info(
+                "Using CLI parameter for {} - {}".format("port_config", args.port_config))
+        elif conf['port_config']:
+            port_config = conf['port_config']
+            logging.info(
+                "Using config json for {} - {}".format("port_config", conf['port_config']))
+        else:
+            if target == 'tofino':
+                logging.warning(
+                    "Port configuration is neither specified via CLI nor in configuration json - tofino ports won't be up!")
+
         if args.hostname:
             hostname = args.hostname
             logging.info(
@@ -390,6 +408,8 @@ CLI parameters will overwrite the configuration if set.
         )
 
         topo_controller.deploy(connector)
+        if target == 'tofino' and port_config:
+            connector.send_bf_shell_commands(9999, open(port_config))
 
 
 if __name__ == '__main__':

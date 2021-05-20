@@ -1,4 +1,8 @@
+import socket
+import logging
 import p4runtime_sh.shell as shell
+
+from time import sleep
 
 
 class TargetConnector:
@@ -91,5 +95,35 @@ class TargetConnector:
         entry.action["vRouterNumberFromTable"] = str(action_vRouter_number)
         entry.insert()
 
+    def send_bf_shell_commands(self, telnet_port,  port_config_fd):
+        """send_bf_shell_command
+        Opens a telnet connection to the p4 target and sends the contents of the provided file to it.
+
+        Parameters
+        ----------
+        telnet_port :
+            int - Port to connect to 
+        port_config_fd :
+            port_config_fd - file-descriptor to the file, containing the bf_shell commands 
+        """
+        logging.info("Connecting to {}:{}".format(self.target_ip, telnet_port))
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((self.target_ip, telnet_port))
+        s_fd = s.makefile('rw')
+
+        logging.info("Submiting content of {}".format(port_config_fd))
+
+        for line in port_config_fd:
+            logging.debug(line.rstrip('\n'))
+            s_fd.write(line)
+            s_fd.flush()
+            sleep(0.05)
+
+        logging.info("Closing Telnet")
+        s_fd.close()
+        s.close()
+
     def teardown(self):
+        """teardown.
+        """
         shell.teardown()
