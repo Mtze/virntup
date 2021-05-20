@@ -1,2 +1,3 @@
 ipaddress
 pytest
+p4runtime-shell
