@@ -332,18 +332,18 @@ CLI parameters will overwrite the configuration if set.
                 "Target is neither specified via CLI nor in configuration json")
             sys.exit()(-1)
 
-        if args.port_config:
-            port_config = args.port_config
-            logging.info(
-                "Using CLI parameter for {} - {}".format("port_config", args.port_config))
-        elif conf['port_config']:
-            port_config = conf['port_config']
-            logging.info(
-                "Using config json for {} - {}".format("port_config", conf['port_config']))
-        else:
-            if target == 'tofino':
-                logging.warning(
-                    "Port configuration is neither specified via CLI nor in configuration json - tofino ports won't be up!")
+        if target == 'tofino':
+            if args.port_config:
+                port_config = args.port_config
+                logging.info(
+                    "Using CLI parameter for {} - {}".format("port_config", args.port_config))
+            elif conf['port_config']:
+                port_config = conf['port_config']
+                logging.info(
+                    "Using config json for {} - {}".format("port_config", conf['port_config']))
+            else:
+                    logging.warning(
+                        "Port configuration is neither specified via CLI nor in configuration json - tofino ports won't be up!")
 
         if args.hostname:
             hostname = args.hostname
