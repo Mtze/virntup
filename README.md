@@ -24,6 +24,9 @@ Virntup simplifies the process of creating and maintaining data center topologie
 
 ### Install 
 - Clone the repository 
+```
+git clone --recursive https://github.com/Mtze/virntup_4.git
+```
 - Crate an virual env and activate it
 ```bash
 virtualenv venv
@@ -53,7 +56,7 @@ The `env.json` contains a list of links to hosts and a list of physical loops be
     ]
 }
 ```
-The `testbed-env-setup` repository contains some preconfigured env files to use, as well as further guidance how to write your own. 
+The `env-setup` repository contains some preconfigured env files to use, as well as further guidance how to write your own. 
 
 #### `P4.info` and `virntup.bin`
 Virntup assumes that the P4 target runs/is able to run the `virntup.p4` program. If the target already runs virntup, these files are not necessary to deploy a topology to the target. 
