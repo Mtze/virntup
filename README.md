@@ -8,8 +8,11 @@ Virntup is a proof of concept, to show that virualizing topologies using P4 hard
 While Virntup is a prototype, it is build fully extensible and adaptable. The code is well documented and design documents are provided to simplify the usage and foster further development of the tool. 
 
 The basic idea is, that we use link loops to recirculate packets back into the switch. Imagine we have the following 16-Port P4 Switch, with 6 wire-loops and 4 ports connected to 4 hosts (A,B,C,D). 
+
 ![](docs/img/Topo-Target-Mapping-Switch-Raw.png)
+
 And we would like to instantiate the following topology, with two virtual routers and two hosts. 
+
 ![](docs/img/Topo-Target-Mapping-Topo-Raw.png)
 
 The system creates a mapping between: 
