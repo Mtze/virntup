@@ -19,8 +19,8 @@ The system creates a mapping between:
 
 The following two images visualize the mapping.
 
-![](docs/img/Topo-Target-Mapping-Switch-Raw.png)
-![](docs/img/Topo-Target-Mapping-Topo-Raw.png)
+![](docs/img/Topo-Target-Mapping-Switch-Applied.png)
+![](docs/img/Topo-Target-Mapping-Topo-Applied.png)
 
 ## Limitations
 
