@@ -7,6 +7,23 @@ Virtualized Network Topologies using P_4 - Interdisciplinary Project at the [Cha
 Virntup is a proof of concept, to show that virualizing topologies using P4 hardware is actually possible and measuring the performance of virutalized topologies to compare it to their physical counterparts.
 While Virntup is a prototype, it is build fully extensible and adaptable. The code is well documented and design documents are provided to simplify the usage and foster further development of the tool. 
 
+The basic idea is, that we use link loops to recirculate packets back into the switch. Imagine we have the following 16-Port P4 Switch, with 6 wire-loops and 4 ports connected to 4 hosts (A,B,C,D). 
+![](docs/img/Topo-Target-Mapping-Switch-Raw.png)
+And we would like to instantiate the following topology, with two virtual routers and two hosts. 
+![](docs/img/Topo-Target-Mapping-Topo-Raw.pdf)
+
+The system creates a mapping between: 
+- target ports <-> vRouters
+- wire loops <-> links between vRouters
+- real host <-> virtual hosts 
+
+The following two images visualize the mapping.
+
+![](docs/img/Topo-Target-Mapping-Switch-Raw.png)
+![](docs/img/Topo-Target-Mapping-Topo-Raw.pdf)
+
+## Limitations
+
 Currently virnup has the following limitations: 
 - Only supports IPv4 
 - ARP is not supported, all hosts connected to the virtual topology have to configure their ARP table manually
@@ -21,6 +38,14 @@ Traffic flows in data centers are often of interest for network researchers. How
 Virntup simplifies the process of creating and maintaining data center topologies using programmable P4 switches. Hence defining, instantiating and adapting topologies on the fly becomes possible and fully automatable. 
 
 ## Usage
+
+The general virntup deployment workflow is shown in the following UML Activity Diagram: 
+![](docs/img/virntup-activity-diagram.png)
+
+We start with a fork node as the setup of the P4 target and the `virntup` setup can be done independently. First, we need to create or provide a `env.json` file, and optionally a `conf.json`.
+Using the specified enviroment we use `virntup topogen` to generate the desired topology resulting in an `ir.json` artifact. 
+The intermediate representation now forms the input for the `virntup envgen` stage, creating the `host.json` configuration file. 
+As soon as all these steps, as well as the `startup P4` target activity are completed, we can deploy the generated topology with `virntup deploy`. 
 
 ### Install 
 - Clone the repository 
