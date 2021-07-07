@@ -10,7 +10,7 @@ While Virntup is a prototype, it is build fully extensible and adaptable. The co
 The basic idea is, that we use link loops to recirculate packets back into the switch. Imagine we have the following 16-Port P4 Switch, with 6 wire-loops and 4 ports connected to 4 hosts (A,B,C,D). 
 ![](docs/img/Topo-Target-Mapping-Switch-Raw.png)
 And we would like to instantiate the following topology, with two virtual routers and two hosts. 
-![](docs/img/Topo-Target-Mapping-Topo-Raw.pdf)
+![](docs/img/Topo-Target-Mapping-Topo-Raw.png)
 
 The system creates a mapping between: 
 - target ports <-> vRouters
@@ -20,7 +20,7 @@ The system creates a mapping between:
 The following two images visualize the mapping.
 
 ![](docs/img/Topo-Target-Mapping-Switch-Raw.png)
-![](docs/img/Topo-Target-Mapping-Topo-Raw.pdf)
+![](docs/img/Topo-Target-Mapping-Topo-Raw.png)
 
 ## Limitations
 
